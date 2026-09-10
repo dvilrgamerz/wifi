@@ -1,0 +1,12 @@
+{
+  "name": "WiFi Pulse — Speed & Game Test",
+  "short_name": "WiFi Pulse",
+  "description": "Classic internet speed test plus a playable gaming-quality test.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07101d",
+  "theme_color": "#08111f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
