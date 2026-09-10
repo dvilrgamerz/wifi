@@ -1,5 +1,5 @@
-const CACHE = 'wifi-pulse-v1';
-const ASSETS = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'wifi-pulse-v2';
+const ASSETS = ['./', './index.html', './styles.css', './game-v2.css', './app-v2.js', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', (event) => event.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS))));
 self.addEventListener('activate', (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))));
 self.addEventListener('fetch', (event) => {
