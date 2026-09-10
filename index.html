@@ -4,23 +4,86 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08111f" />
-  <meta name="description" content="WiFi Pulse — speed test plus an endless survival gaming network test." />
-  <title>WiFi Pulse — Speed & Survival Test</title>
+  <meta name="description" content="WiFi Pulse V2 — classic internet speed testing plus an endless survival gaming network test." />
+  <title>WiFi Pulse V2 — Speed & Signal Survivor</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="game-v2.css" />
+  <link rel="stylesheet" href="v2.css" />
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
-  <header class="topbar"><a class="brand" href="#" aria-label="WiFi Pulse home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>WiFi <b>Pulse</b></span></a><div class="top-actions"><span class="online-pill" id="onlinePill"><i></i><span>Online</span></span><button class="icon-btn" id="historyBtn" aria-label="Open test history" title="History">↻</button></div></header>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="WiFi Pulse home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>WiFi <b>Pulse</b></span></a>
+    <div class="top-actions"><span class="online-pill" id="onlinePill"><i></i><span>Online</span></span><button class="icon-btn" id="historyBtn" aria-label="Open test history" title="History">↻</button></div>
+  </header>
+
   <main class="shell">
-    <section class="hero"><p class="eyebrow">NETWORK PERFORMANCE LAB</p><h1>Test your internet.<br><span>Then survive the network.</span></h1><p class="hero-copy">Run a classic speed test or enter an endless top-down survival game while WiFi Pulse measures latency, jitter, stability and frame stutter.</p></section>
-    <section class="mode-grid" id="modeGrid" aria-label="Choose a test mode"><button class="mode-card selected" data-mode="classic" id="classicCard"><span class="mode-icon speed-icon" aria-hidden="true">◒</span><span class="mode-copy"><strong>Classic Speed Test</strong><small>Ping · Download · Upload · Stability</small></span><span class="mode-badge">FAST</span></button><button class="mode-card" data-mode="game" id="gameCard"><span class="mode-icon game-icon" aria-hidden="true">☄</span><span class="mode-copy"><strong>Endless Survival Test</strong><small>Survive waves while we test gaming quality</small></span><span class="mode-badge accent">ENDLESS</span></button></section>
-    <section class="panel test-panel" id="classicPanel"><div class="panel-heading"><div><p class="kicker">CLASSIC MODE</p><h2>Internet speed test</h2></div><div class="server-chip"><span>Target</span><b>Cloudflare edge</b></div></div><div class="speed-stage"><div class="gauge" id="gauge"><div class="gauge-ring"></div><div class="gauge-content"><span class="gauge-label" id="gaugeLabel">READY</span><strong id="gaugeValue">0</strong><span class="gauge-unit" id="gaugeUnit">Mbps</span></div></div><button class="start-btn" id="startClassic"><span>GO</span><small>Start test</small></button><p class="status-line" id="classicStatus" aria-live="polite">Ready when you are.</p></div><div class="metrics four"><article class="metric"><span>Ping</span><strong id="pingValue">—</strong><small>ms</small></article><article class="metric"><span>Jitter</span><strong id="jitterValue">—</strong><small>ms</small></article><article class="metric"><span>Download</span><strong id="downValue">—</strong><small>Mbps</small></article><article class="metric"><span>Upload</span><strong id="upValue">—</strong><small>Mbps</small></article></div><div class="progress-wrap" id="classicProgressWrap" hidden><div class="progress-top"><span id="progressText">Preparing…</span><span id="progressPercent">0%</span></div><div class="progress"><i id="progressBar"></i></div></div></section>
-    <section class="panel game-panel survival-panel" id="gamePanel" hidden><div class="panel-heading"><div><p class="kicker">ENDLESS GAME MODE</p><h2>Signal Survivor</h2></div><div class="server-chip"><span>Test length</span><b>Until you fall</b></div></div><div class="survival-hud"><div class="hud-pill"><span>❤ HP</span><b id="gameHp">100/100</b></div><div class="hud-pill"><span>LEVEL</span><b id="gameLevel">1</b></div><div class="hud-pill"><span>KILLS</span><b id="gameKills">0</b></div><div class="hud-pill"><span>TIME</span><b id="gameTime">0:00</b></div></div><div class="xp-track"><i id="xpFill"></i></div><div class="game-layout"><div class="game-wrap survival-wrap"><canvas id="gameCanvas" width="960" height="540" aria-label="Signal Survivor endless survival game"></canvas><div class="game-overlay" id="gameOverlay"><div class="game-logo">☄</div><h3>Signal Survivor</h3><p>Move in any direction. Your weapon fires automatically. Defeat swarms, collect XP, choose upgrades and survive bosses while the network test runs live.</p><button class="primary-btn" id="startGame">START ENDLESS RUN</button><small>WASD / arrow keys / drag on the arena / touch controls</small></div><div class="upgrade-overlay" id="upgradeOverlay" hidden><div class="upgrade-box"><p class="kicker">LEVEL UP</p><h3>Choose one upgrade</h3><div class="upgrade-choices" id="upgradeChoices"></div></div></div><div class="touch-controls survival-controls" id="touchControls" hidden><button data-dir="up" aria-label="Move up">↑</button><button data-dir="left" aria-label="Move left">←</button><button data-dir="down" aria-label="Move down">↓</button><button data-dir="right" aria-label="Move right">→</button></div></div><aside class="live-card"><div class="live-title"><i></i> LIVE NETWORK</div><div class="live-row"><span>Ping</span><b id="gamePing">— ms</b></div><div class="live-row"><span>Jitter</span><b id="gameJitter">— ms</b></div><div class="live-row"><span>Mini download</span><b id="gameDown">— Mbps</b></div><div class="live-row"><span>Request loss</span><b id="gameLoss">0%</b></div><div class="live-row"><span>Frame stutters</span><b id="gameStutters">0</b></div><div class="network-note">The run continues indefinitely. Network samples update throughout your entire survival attempt.</div></aside></div><div class="game-result" id="gameResult" hidden><div class="score-orb"><strong id="gamingScore">—</strong><span>/100</span></div><div><p class="kicker">GAMING QUALITY</p><h3 id="gamingRating">Calculating…</h3><p id="gamingSummary"></p></div><div class="result-stats"><span><b id="finalGamePing">—</b> ms ping</span><span><b id="finalGameJitter">—</b> ms jitter</span><span><b id="finalGameLoss">—</b>% request loss</span></div></div></section>
-    <section class="info-grid"><article class="info-card"><span class="info-icon">⌁</span><div><h3>Latency matters</h3><p>Lower ping and jitter usually feel smoother in online games and voice chat.</p></div></article><article class="info-card"><span class="info-icon">⇣</span><div><h3>Adaptive testing</h3><p>The classic test changes sample size based on your connection to avoid wasting too much data.</p></div></article><article class="info-card"><span class="info-icon">☄</span><div><h3>Endless stress test</h3><p>The survival game keeps measuring your connection as difficulty and on-screen activity increase.</p></div></article></section><section class="panel tips-panel"><div><p class="kicker">BETTER RESULTS</p><h2>Before you test</h2></div><div class="tips"><span>Pause large downloads</span><span>Stay near your router</span><span>Run 2–3 tests</span><span>Compare Wi‑Fi vs Ethernet</span></div></section>
+    <section class="hero">
+      <p class="eyebrow">NETWORK PERFORMANCE LAB</p>
+      <h1>Test your internet.<br><span>Then survive the network.</span></h1>
+      <p class="hero-copy">Run a modern classic speed test or enter Signal Survivor while WiFi Pulse V2 measures latency, jitter, throughput, stability and gameplay smoothness.</p>
+    </section>
+
+    <section class="mode-grid" id="modeGrid" aria-label="Choose a test mode">
+      <button class="mode-card selected" data-mode="classic" id="classicCard"><span class="mode-icon speed-icon" aria-hidden="true">◒</span><span class="mode-copy"><strong>Classic Speed Test</strong><small>Ping · Download · Upload · Stability</small></span><span class="mode-badge">V2</span></button>
+      <button class="mode-card" data-mode="game" id="gameCard"><span class="mode-icon game-icon" aria-hidden="true">☄</span><span class="mode-copy"><strong>Signal Survivor</strong><small>Endless survival + live network testing</small></span><span class="mode-badge accent">ENDLESS</span></button>
+    </section>
+
+    <section class="panel test-panel" id="classicPanel">
+      <div class="panel-heading"><div><p class="kicker">CLASSIC MODE V2</p><h2>Internet speed test</h2></div><div class="server-chip"><span>Target</span><b>Cloudflare edge</b></div></div>
+      <div class="speed-stage">
+        <div class="gauge" id="gauge"><div class="gauge-ring"></div><div class="gauge-content"><span class="gauge-label" id="gaugeLabel">READY</span><strong id="gaugeValue">0</strong><span class="gauge-unit" id="gaugeUnit">Mbps</span></div></div>
+        <button class="start-btn" id="startClassic"><span>GO</span><small>Start V2 test</small></button>
+        <p class="status-line" id="classicStatus" aria-live="polite">Ready when you are.</p>
+      </div>
+      <div class="metrics four">
+        <article class="metric"><span>Ping</span><strong id="pingValue">—</strong><small>ms</small></article>
+        <article class="metric"><span>Jitter</span><strong id="jitterValue">—</strong><small>ms</small></article>
+        <article class="metric"><span>Download</span><strong id="downValue">—</strong><small>Mbps</small></article>
+        <article class="metric"><span>Upload</span><strong id="upValue">—</strong><small>Mbps</small></article>
+      </div>
+      <div class="progress-wrap" id="classicProgressWrap" hidden><div class="progress-top"><span id="progressText">Preparing…</span><span id="progressPercent">0%</span></div><div class="progress"><i id="progressBar"></i></div></div>
+    </section>
+
+    <section class="panel game-panel survival-panel" id="gamePanel" hidden>
+      <div class="panel-heading"><div><p class="kicker">SIGNAL SURVIVOR V2</p><h2>Endless gaming network test</h2></div><div class="server-chip"><span>Test length</span><b>Until you fall</b></div></div>
+      <div class="survival-hud"><div class="hud-pill"><span>❤ HP</span><b id="gameHp">100/100</b></div><div class="hud-pill"><span>LEVEL</span><b id="gameLevel">1</b></div><div class="hud-pill"><span>KILLS</span><b id="gameKills">0</b></div><div class="hud-pill"><span>TIME</span><b id="gameTime">0:00</b></div></div>
+      <div class="xp-track"><i id="xpFill"></i></div>
+      <div class="game-layout">
+        <div class="game-wrap survival-wrap">
+          <canvas id="gameCanvas" width="960" height="540" aria-label="Signal Survivor endless survival game"></canvas>
+          <div class="game-overlay" id="gameOverlay"><div class="game-logo">☄</div><h3>Signal Survivor V2</h3><p>Move in any direction. Your weapon fires automatically. Defeat swarms, collect XP, choose upgrades and survive bosses while the network test runs live.</p><button class="primary-btn" id="startGame">START ENDLESS RUN</button><small>WASD / arrow keys / drag on the arena / touch controls</small></div>
+          <div class="upgrade-overlay" id="upgradeOverlay" hidden><div class="upgrade-box"><p class="kicker">LEVEL UP</p><h3>Choose one upgrade</h3><div class="upgrade-choices" id="upgradeChoices"></div></div></div>
+          <div class="touch-controls survival-controls" id="touchControls" hidden><button data-dir="up" aria-label="Move up">↑</button><button data-dir="left" aria-label="Move left">←</button><button data-dir="down" aria-label="Move down">↓</button><button data-dir="right" aria-label="Move right">→</button></div>
+        </div>
+        <aside class="live-card">
+          <div class="live-title"><i></i> LIVE NETWORK</div>
+          <div class="live-row"><span>Ping</span><b id="gamePing">— ms</b></div>
+          <div class="live-row"><span>Jitter</span><b id="gameJitter">— ms</b></div>
+          <div class="live-row"><span>Mini download</span><b id="gameDown">— Mbps</b></div>
+          <div class="live-row"><span>Request loss</span><b id="gameLoss">0%</b></div>
+          <div class="live-row"><span>Frame stutters</span><b id="gameStutters">0</b></div>
+          <div class="network-note">V2 keeps measuring your network throughout the entire survival run.</div>
+        </aside>
+      </div>
+      <div class="game-result" id="gameResult" hidden><div class="score-orb"><strong id="gamingScore">—</strong><span>/100</span></div><div><p class="kicker">GAMING QUALITY</p><h3 id="gamingRating">Calculating…</h3><p id="gamingSummary"></p></div><div class="result-stats"><span><b id="finalGamePing">—</b> ms ping</span><span><b id="finalGameJitter">—</b> ms jitter</span><span><b id="finalGameLoss">—</b>% request loss</span></div></div>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card"><span class="info-icon">⌁</span><div><h3>V2 connection score</h3><p>Get a 0–100 score and grade after each classic test, plus gaming, 4K and video-call readiness.</p></div></article>
+      <article class="info-card"><span class="info-icon">⇣</span><div><h3>Adaptive speed testing</h3><p>Transfer sizes adapt to your connection so the test stays useful without wasting unnecessary data.</p></div></article>
+      <article class="info-card"><span class="info-icon">☄</span><div><h3>Live game stress test</h3><p>Signal Survivor tracks network health and frame stutters while the on-screen challenge keeps increasing.</p></div></article>
+    </section>
+
+    <section class="panel tips-panel"><div><p class="kicker">BETTER RESULTS</p><h2>Before you test</h2></div><div class="tips"><span>Pause large downloads</span><span>Stay near your router</span><span>Run 2–3 tests</span><span>Compare Wi‑Fi vs Ethernet</span></div></section>
   </main>
-  <aside class="drawer" id="historyDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="kicker">LOCAL HISTORY</p><h2>Your tests</h2></div><button class="icon-btn" id="closeHistory" aria-label="Close history">×</button></div><div id="historyList" class="history-list"></div><button class="ghost-btn" id="clearHistory">Clear history</button></aside><div class="scrim" id="scrim" hidden></div><footer><span>WiFi Pulse</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer><script src="app-v2.js" defer></script>
+
+  <aside class="drawer" id="historyDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="kicker">LOCAL HISTORY</p><h2>Your tests</h2></div><button class="icon-btn" id="closeHistory" aria-label="Close history">×</button></div><div id="historyList" class="history-list"></div><button class="ghost-btn" id="clearHistory">Clear history</button></aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <footer><span>WiFi Pulse V2</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer>
+  <script src="app-v2.js" defer></script>
+  <script src="v2.js" defer></script>
 </body>
 </html>
