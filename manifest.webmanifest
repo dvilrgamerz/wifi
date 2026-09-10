@@ -1,7 +1,7 @@
 {
-  "name": "WiFi Pulse — Speed & Game Test",
+  "name": "WiFi Pulse — Speed & Signal Survivor",
   "short_name": "WiFi Pulse",
-  "description": "Classic internet speed test plus a playable gaming-quality test.",
+  "description": "Classic internet speed testing plus an endless survival gaming network test.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#07101d",
