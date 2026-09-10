@@ -1,25 +1,64 @@
 # WiFi Pulse
 
-A polished, mobile-first internet performance tester with two modes:
+**WiFi Pulse** is a polished, mobile-first browser app for testing internet performance in two different ways.
 
-1. **Classic Speed Test** — browser-based ping, jitter, adaptive download and adaptive upload testing.
-2. **Game Test / Packet Runner** — a 15-second playable mini-game that measures live ping, jitter, request failures, lightweight download throughput and browser frame stutters while you play.
+## 1) Classic Speed Test
+
+A familiar speed-test experience inspired by modern tools such as Speedtest by Ookla:
+
+- Ping
+- Jitter
+- Download speed
+- Upload speed
+- Adaptive test sizes
+- Animated live gauge
+- Connection-quality summary
+- Local result history
+
+## 2) Signal Survivor — Game Network Test
+
+An original endless top-down survival game that measures how your connection behaves while you are actually playing.
+
+Gameplay includes:
+
+- Endless enemy waves
+- 360-degree movement
+- Auto-firing weapons
+- XP gems and leveling
+- Random upgrade choices
+- Health, kills, level and survival-time HUD
+- Regular, elite and boss enemies
+- Increasing difficulty
+- Keyboard controls
+- Mobile touch controls
+- Drag-to-move support
+
+While the run is active, WiFi Pulse continuously measures:
+
+- Live ping
+- Jitter
+- Browser request failures
+- Lightweight download throughput
+- Frame stutters
+- Overall gaming-quality score
 
 ## Features
 
-- Responsive dark UI with animated speed gauge
-- Classic ping / jitter / download / upload test
-- Adaptive sample sizes to reduce unnecessary data use
-- Playable canvas game with touch, keyboard and A/D controls
-- Gaming quality score (0–100)
-- Local-only test history using `localStorage`
-- Installable PWA shell
-- No account, database or paid backend required
-- Ready for GitHub Pages or Netlify
+- Modern responsive dark UI
+- Two clearly separated test modes
+- Mobile-first layout
+- Installable PWA
+- Offline app shell
+- Local-only result history with `localStorage`
+- No login
+- No database
+- No paid backend required
+- Netlify-ready
+- GitHub Pages-ready
 
 ## Run locally
 
-Because browser networking rules are stricter for `file://` pages, serve the folder over HTTP:
+Serve the folder over HTTP:
 
 ```bash
 python -m http.server 8080
@@ -27,28 +66,36 @@ python -m http.server 8080
 
 Then open `http://localhost:8080`.
 
-## Deployment
+## Deploy
 
 ### Netlify
 
-Import this repository into Netlify. No build command is required; publish directory is `.`.
+Import this repository into Netlify. No build command is required. Publish directory: `.`
 
 ### GitHub Pages
 
-Enable Pages for the repository and serve from the `main` branch root.
+Enable GitHub Pages and deploy from the root of the `main` branch.
 
-## How measurements work
+## Measurement notes
 
-The browser uses public Cloudflare Speed Test edge endpoints for timing and transfer samples. The Classic test uses multiple samples and median values to reduce one-off spikes. Game Test continuously samples HTTP request latency while Packet Runner is active.
+WiFi Pulse uses public Cloudflare Speed Test edge endpoints for browser-based timing and transfer samples.
 
-Browser-based results are **estimates**, not laboratory measurements. Results can differ from Ookla Speedtest, your ISP's test, or an actual game server because providers use different servers, protocols, routes and measurement methods. "Request loss" is the percentage of timed browser test requests that fail or time out; it is not ICMP packet loss.
+The Classic mode uses repeated measurements and median values to reduce one-off spikes. Signal Survivor keeps collecting lightweight network samples while gameplay continues.
 
-A speed test can use a meaningful amount of data. WiFi Pulse uses adaptive transfer sizes, but users on metered/mobile data should test carefully.
+Results are estimates and can differ from Ookla Speedtest, ISP tests, or actual game servers because each service may use different servers, routing, protocols and testing methods.
+
+“Request loss” means browser test requests that failed or timed out. It is not the same thing as ICMP packet loss.
+
+Speed testing can use a meaningful amount of data. WiFi Pulse uses adaptive transfer sizes, but users on metered connections should test carefully.
 
 ## Privacy
 
-WiFi Pulse itself does not run a user database or analytics service. Test history is saved only in the browser. Network test requests go to Cloudflare's Speed Test service, so Cloudflare receives the network information required to serve those requests under its own policies.
+WiFi Pulse does not run its own user database or analytics service. Test history remains in the browser unless the user manually clears it.
+
+Network test requests are sent to Cloudflare’s Speed Test service, so Cloudflare receives the network information necessary to serve those requests under its own policies.
 
 ## Disclaimer
 
-This is an independent project and is not affiliated with Ookla or Cloudflare. "Speedtest" is commonly used to describe internet speed measurement; Ookla and Speedtest by Ookla are trademarks of their respective owner.
+WiFi Pulse is an independent project and is not affiliated with Ookla, Survivor.io, or Cloudflare.
+
+The survival game is an original implementation inspired by the general endless-survival genre. It does not copy Survivor.io artwork, characters, names, levels, or proprietary assets.
