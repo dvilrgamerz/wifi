@@ -1,124 +1,275 @@
-# WiFi Pulse V2
+# 📶 WiFi Pulse
 
-**WiFi Pulse V2** is a polished, mobile-first browser app for testing internet performance in two different ways.
+<p align="center">
+  <strong>A modern browser internet diagnostics lab + an original game that tests your connection while you play.</strong>
+</p>
 
-## What's new in V2
+<p align="center">
+  <a href="https://github.com/dvilrgamerz/wifi/actions"><img alt="CI" src="https://github.com/dvilrgamerz/wifi/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+  <img alt="Frontend" src="https://img.shields.io/badge/frontend-HTML%20%2B%20CSS%20%2B%20JavaScript-orange">
+  <img alt="Backend" src="https://img.shields.io/badge/backend-optional%20Python%20%2F%20Flask-green">
+</p>
 
-- New 0–100 connection score after Classic tests
-- A+ through F connection grades
-- Gaming readiness result
-- 4K streaming readiness result
-- Video-call readiness result
-- Stability rating based on jitter
-- Browser connection profile with effective network type, RTT estimate, downlink estimate and Data Saver state when supported
-- Copyable speed-test result summary
-- Install-app button when PWA installation is supported
-- Live network-health meter during Signal Survivor
-- Dynamic survival threat level
-- Saved best survival time
-- Updated V2 interface, branding and PWA cache
+---
 
-## 1) Classic Speed Test
+## ⚡ Two ways to test your connection
 
-A familiar speed-test experience inspired by modern tools such as Speedtest by Ookla:
+### 1. Classic Speed Test
 
-- Ping
-- Jitter
-- Download speed
-- Upload speed
-- Adaptive test sizes
-- Animated live gauge
-- Connection-quality summary
-- V2 connection score and grade
-- Gaming / streaming / call readiness
-- Local result history
+WiFi Pulse runs a real browser-based connection test and reports:
 
-## 2) Signal Survivor — Game Network Test
+- **Ping**
+- **Jitter**
+- **Download speed**
+- **Upload speed**
+- **Connection score**
+- **Gaming readiness**
+- **4K streaming readiness**
+- **Video-call readiness**
+- **Connection stability**
+- Local browser history and copyable results
 
-An original endless top-down survival game that measures how your connection behaves while you are actually playing.
+The upgraded engine automatically chooses the best available test path:
 
-Gameplay includes:
+```text
+WiFi Pulse frontend
+      │
+      ├── local/full-stack deployment ──► WiFi Pulse Python backend
+      │
+      └── static/Netlify deployment ────► Cloudflare speed-test edge
+```
 
-- Endless enemy waves
-- 360-degree movement
+No user has to configure this manually.
+
+### 2. ☄️ Signal Survivor
+
+Signal Survivor turns network diagnostics into an endless top-down survival game.
+
+**Gameplay**
+- Endless waves
 - Auto-firing weapons
 - XP gems and leveling
-- Random upgrade choices
-- Health, kills, level and survival-time HUD
+- Upgrade choices
 - Regular, elite and boss enemies
 - Increasing difficulty
-- Keyboard controls
-- Mobile touch controls
-- Drag-to-move support
-- Live V2 network-health score
-- Threat-level indicator
-- Saved best survival run
+- Keyboard, pointer and mobile controls
 
-While the run is active, WiFi Pulse continuously measures:
-
-- Live ping
+**Live network measurements**
+- Ping
 - Jitter
+- Lightweight throughput samples
 - Browser request failures
-- Lightweight download throughput
-- Frame stutters
-- Overall gaming-quality score
+- Frame-stutter tracking
+- Gaming-quality score
 
-## Core features
+The game is an original implementation inspired by the general endless-survival genre. It does **not** copy commercial game artwork, characters, code, names, maps or proprietary assets.
 
-- Modern responsive dark UI
-- Two clearly separated test modes
-- Mobile-first layout
-- Installable PWA
-- Offline app shell
-- Local-only result history with `localStorage`
-- No login
-- No database
-- No paid backend required
-- Netlify-ready
-- GitHub Pages-ready
+---
 
-## Run locally
+## 🧠 Why WiFi Pulse is different
 
-Serve the folder over HTTP:
+Most speed tests end when the number appears.
+
+WiFi Pulse gives you both a normal speed test **and** a longer real-world gaming-style stress test. Signal Survivor keeps measuring connection behavior while the browser is also rendering and running gameplay.
+
+This makes it useful for seeing the difference between:
+
+- high bandwidth vs. good latency
+- average ping vs. jitter spikes
+- a fast connection vs. a stable connection
+- network problems vs. browser/device frame stutters
+
+---
+
+## 🏗️ Project structure
+
+```text
+wifi/
+├── index.html
+├── app.js                    # main speed-test + Signal Survivor engine
+├── v2.js                     # UI insights, scoring and PWA enhancements
+├── styles.css
+├── game-v2.css
+├── v2.css
+├── manifest.webmanifest
+├── sw.js
+├── netlify.toml
+│
+├── backend/
+│   ├── .env.example
+│   └── python/
+│       ├── app.py            # optional Flask speed-test API
+│       ├── requirements.txt
+│       └── test_app.py
+│
+├── .github/
+│   ├── workflows/ci.yml
+│   └── pull_request_template.md
+├── Dockerfile
+├── docker-compose.yml
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── LICENSE
+```
+
+---
+
+## 🚀 Run it
+
+### Fastest: static mode
+
+No dependencies are required.
 
 ```bash
 python -m http.server 8080
 ```
 
-Then open `http://localhost:8080`.
+Open:
 
-## Deploy
+```text
+http://localhost:8080
+```
 
-### Netlify
+The browser automatically falls back to Cloudflare for test traffic.
 
-Import this repository into Netlify. No build command is required. Publish directory: `.`
+### Full-stack mode
 
-### GitHub Pages
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
 
-Enable GitHub Pages and deploy from the root of the `main` branch.
+# macOS/Linux
+# source .venv/bin/activate
 
-## Measurement notes
+python -m pip install -r backend/python/requirements.txt
+python backend/python/app.py
+```
 
-WiFi Pulse uses public Cloudflare Speed Test edge endpoints for browser-based timing and transfer samples.
+Then open:
 
-The Classic mode uses repeated measurements and median values to reduce one-off spikes. Signal Survivor keeps collecting lightweight network samples while gameplay continues.
+```text
+http://127.0.0.1:8000
+```
 
-The V2 connection score is a WiFi Pulse estimate that combines measured ping, jitter, download and upload into an easier overall rating. It is not an official ISP or Ookla score.
+WiFi Pulse automatically detects the Python backend and uses it for download/upload test traffic.
 
-Results can differ from Ookla Speedtest, ISP tests, or actual game servers because each service may use different servers, routing, protocols and testing methods.
+### Docker
 
-“Request loss” means browser test requests that failed or timed out. It is not the same thing as ICMP packet loss.
+```bash
+docker compose up --build
+```
 
-Speed testing can use a meaningful amount of data. WiFi Pulse uses adaptive transfer sizes, but users on metered connections should test carefully.
+Then visit `http://localhost:8000`.
 
-## Privacy
+---
 
-WiFi Pulse does not run its own user database or analytics service. Test history and V2 best-run data remain in the browser unless the user clears local site data.
+## 🌐 Deployment
 
-Network test requests are sent to Cloudflare’s Speed Test service, so Cloudflare receives the network information necessary to serve those requests under its own policies.
+### Netlify / GitHub Pages / static hosting
 
-## Disclaimer
+Deploy the repository root as a static site. No build command is required.
 
-WiFi Pulse is an independent project and is not affiliated with Ookla, Survivor.io, or Cloudflare.
+Static deployments automatically use Cloudflare speed-test endpoints.
 
-The survival game is an original implementation inspired by the general endless-survival genre. It does not copy Survivor.io artwork, characters, names, levels, or proprietary assets.
+### Full-stack hosting
+
+Use the included Dockerfile or run the Flask app behind a production WSGI server and HTTPS.
+
+The backend includes:
+
+- request-size limits
+- per-client API rate limiting
+- defensive browser security headers
+- proxy-header trust disabled by default
+- bounded download/upload test sizes
+- metric validation
+- automated regression tests
+
+> A public speed-test server can consume substantial bandwidth. Set conservative limits and monitor public deployments.
+
+---
+
+## ✅ Quality checks
+
+GitHub Actions automatically checks:
+
+- JavaScript syntax
+- required frontend assets
+- frontend entry-point consistency
+- Python compilation
+- Flask regression tests
+
+Run them locally:
+
+```bash
+node --check app.js
+node --check v2.js
+node --check sw.js
+
+cd backend/python
+pytest -q
+```
+
+---
+
+## 🔐 Privacy
+
+WiFi Pulse intentionally has:
+
+- **no login**
+- **no password database**
+- **no SQL database**
+- **no advertising tracker**
+- **no analytics database**
+- local-only result history
+
+Static-mode network test traffic is sent to Cloudflare's speed-test service. Full-stack mode can use your own WiFi Pulse backend instead.
+
+A normal website cannot reliably read your Wi-Fi password, router password, Wi-Fi channel, or true radio signal strength.
+
+---
+
+## 📏 Measurement notes
+
+Browser speed tests are estimates of the path between your device and the selected test endpoint. Results can vary because of:
+
+- Wi-Fi distance and interference
+- router load
+- VPNs/proxies
+- ISP congestion
+- device load
+- browser behavior
+- server location and routing
+
+"Request loss" in Signal Survivor means browser test requests that failed or timed out. It is **not** the same as ICMP packet loss.
+
+For better comparisons, run multiple tests and compare Wi-Fi against Ethernet where possible.
+
+---
+
+## 🛡️ Responsible use
+
+Only test networks and infrastructure you are authorized to use. Do not use the project to intentionally overwhelm test endpoints or hosting infrastructure.
+
+See [SECURITY.md](SECURITY.md) for security reporting and deployment guidance.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+
+---
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+  <strong>WiFi Pulse</strong><br>
+  Speed. Stability. Survival. 📶☄️
+</p>
