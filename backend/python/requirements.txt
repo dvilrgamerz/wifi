@@ -1,1 +1,2 @@
-Flask>=3.0,<4\ngunicorn>=23,<24\n
+Flask>=3.0,<4
+gunicorn>=23,<24
