@@ -31,6 +31,9 @@ jobs:
           grep -q 'src="app.js"' index.html
           grep -q 'id="serverTarget"' index.html
           ! grep -q 'src="app-insights.js"' index.html
+          grep -Fq '[hidden] { display: none !important; }' styles.css
+          grep -q 'id="upgradeOverlay" hidden' index.html
+          grep -q "b.type='button';b.className='upgrade-card'" app.js
 
   backend:
     runs-on: ubuntu-latest
