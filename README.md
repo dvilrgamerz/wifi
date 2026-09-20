@@ -1,4 +1,4 @@
-# 📶 WiFi Pulse
+# 📶 WiFi Pulse V2
 
 <p align="center">
   <strong>A modern browser internet diagnostics lab + an original game that tests your connection while you play.</strong>
@@ -6,10 +6,31 @@
 
 <p align="center">
   <a href="https://github.com/dvilrgamerz/wifi/actions"><img alt="CI" src="https://github.com/dvilrgamerz/wifi/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-7c3aed">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <img alt="Frontend" src="https://img.shields.io/badge/frontend-HTML%20%2B%20CSS%20%2B%20JavaScript-orange">
   <img alt="Backend" src="https://img.shields.io/badge/backend-optional%20Python%20%2F%20Flask-green">
 </p>
+
+---
+
+## 🚀 V2
+
+**WiFi Pulse V2** is the current major release.
+
+V2 includes:
+- adaptive multi-stream download and upload testing
+- improved latency and jitter sampling
+- automatic backend detection with Cloudflare fallback
+- Signal Survivor live network testing
+- PWA/offline support
+- local result history
+- optional Python/Flask backend
+- Docker support
+- GitHub Actions CI
+- stronger security headers and validation
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ---
 
