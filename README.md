@@ -21,8 +21,8 @@ WiFi Pulse runs a real browser-based connection test and reports:
 
 - **Ping**
 - **Jitter**
-- **Download speed**
-- **Upload speed**
+- **Download speed** (adaptive multi-stream)
+- **Upload speed** (adaptive multi-stream)
 - **Connection score**
 - **Gaming readiness**
 - **4K streaming readiness**
@@ -233,7 +233,7 @@ A normal website cannot reliably read your Wi-Fi password, router password, Wi-F
 
 ## 📏 Measurement notes
 
-Browser speed tests are estimates of the path between your device and the selected test endpoint. Results can vary because of:
+Browser speed tests are estimates of the path between your device and the selected test endpoint. WiFi Pulse uses warm-up passes, multiple latency samples, adaptive transfer sizes, and parallel streams to reduce short-test under-reading. Results can vary because of:
 
 - Wi-Fi distance and interference
 - router load
