@@ -1,12 +1,18 @@
 {
-  "name": "WiFi Pulse V2 — Speed & Signal Survivor",
-  "short_name": "WiFi Pulse V2",
-  "description": "Classic speed testing, V2 connection scoring, and an endless survival gaming network test.",
+  "name": "WiFi Pulse — Speed Test & Signal Survivor",
+  "short_name": "WiFi Pulse",
+  "description": "Browser internet diagnostics plus Signal Survivor, a live gaming network stress test.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#07101d",
+  "background_color": "#08111f",
   "theme_color": "#08111f",
   "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }
