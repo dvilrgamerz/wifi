@@ -1,0 +1,50 @@
+name: WiFi Pulse CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check v2.js
+          node --check sw.js
+      - name: Validate required app files
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s game-v2.css
+          test -s v2.css
+          test -s manifest.webmanifest
+          test -s netlify.toml
+          grep -q 'src="app.js"' index.html
+          grep -q 'id="serverTarget"' index.html
+          ! grep -q 'src="app-v2.js"' index.html
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/python/requirements.txt pytest
+      - name: Compile backend
+        run: python -m py_compile backend/python/app.py
+      - name: Run regression tests
+        working-directory: backend/python
+        run: pytest -q
