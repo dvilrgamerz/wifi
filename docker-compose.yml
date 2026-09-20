@@ -1,0 +1,12 @@
+services:
+  wifi-pulse:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+      RATE_LIMIT: 120
+      RATE_WINDOW_SECONDS: 60
+      MAX_SPEEDTEST_BYTES: 52428800
+    restart: unless-stopped
