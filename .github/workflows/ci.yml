@@ -34,6 +34,9 @@ jobs:
           grep -Fq '[hidden] { display: none !important; }' styles.css
           grep -q 'id="upgradeOverlay" hidden' index.html
           grep -q "b.type='button';b.className='upgrade-card'" app.js
+          grep -q 'id="forceStartGame"' index.html
+          grep -q "forceStart?.addEventListener" app.js
+          grep -q "ge.upgrade.style.display='none'" app.js
 
   backend:
     runs-on: ubuntu-latest
