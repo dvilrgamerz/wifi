@@ -88,10 +88,10 @@ This makes it useful for seeing the difference between:
 wifi/
 ├── index.html
 ├── app.js                    # main speed-test + Signal Survivor engine
-├── v2.js                     # UI insights, scoring and PWA enhancements
+├── insights.js                     # UI insights, scoring and PWA enhancements
 ├── styles.css
-├── game-v2.css
-├── v2.css
+├── game.css
+├── insights.css
 ├── manifest.webmanifest
 ├── sw.js
 ├── netlify.toml
@@ -205,7 +205,7 @@ Run them locally:
 
 ```bash
 node --check app.js
-node --check v2.js
+node --check insights.js
 node --check sw.js
 
 cd backend/python
