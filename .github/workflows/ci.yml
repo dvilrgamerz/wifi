@@ -18,19 +18,19 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
-          node --check v2.js
+          node --check insights.js
           node --check sw.js
       - name: Validate required app files
         run: |
           test -s index.html
           test -s styles.css
-          test -s game-v2.css
-          test -s v2.css
+          test -s game.css
+          test -s insights.css
           test -s manifest.webmanifest
           test -s netlify.toml
           grep -q 'src="app.js"' index.html
           grep -q 'id="serverTarget"' index.html
-          ! grep -q 'src="app-v2.js"' index.html
+          ! grep -q 'src="app-insights.js"' index.html
 
   backend:
     runs-on: ubuntu-latest
