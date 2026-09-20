@@ -34,7 +34,7 @@ Open `http://127.0.0.1:8000`. The frontend will automatically use the local WiFi
 
 ```bash
 node --check app.js
-node --check v2.js
+node --check insights.js
 node --check sw.js
 cd backend/python
 pytest -q
