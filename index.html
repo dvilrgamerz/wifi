@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08111f" />
-  <meta name="description" content="WiFi Pulse V2 — classic internet speed testing plus an endless survival gaming network test." />
-  <title>WiFi Pulse V2 — Speed & Signal Survivor</title>
+  <meta name="description" content="WiFi Pulse — real browser speed testing plus Signal Survivor, an endless game that measures network quality while you play." />
+  <title>WiFi Pulse — Speed Test & Signal Survivor</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -32,7 +32,7 @@
     </section>
 
     <section class="panel test-panel" id="classicPanel">
-      <div class="panel-heading"><div><p class="kicker">CLASSIC MODE V2</p><h2>Internet speed test</h2></div><div class="server-chip"><span>Target</span><b>Cloudflare edge</b></div></div>
+      <div class="panel-heading"><div><p class="kicker">CLASSIC MODE V2</p><h2>Internet speed test</h2></div><div class="server-chip"><span>Target</span><b id="serverTarget">Auto-detecting</b></div></div>
       <div class="speed-stage">
         <div class="gauge" id="gauge"><div class="gauge-ring"></div><div class="gauge-content"><span class="gauge-label" id="gaugeLabel">READY</span><strong id="gaugeValue">0</strong><span class="gauge-unit" id="gaugeUnit">Mbps</span></div></div>
         <button class="start-btn" id="startClassic"><span>GO</span><small>Start V2 test</small></button>
@@ -83,7 +83,7 @@
   <aside class="drawer" id="historyDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="kicker">LOCAL HISTORY</p><h2>Your tests</h2></div><button class="icon-btn" id="closeHistory" aria-label="Close history">×</button></div><div id="historyList" class="history-list"></div><button class="ghost-btn" id="clearHistory">Clear history</button></aside>
   <div class="scrim" id="scrim" hidden></div>
   <footer><span>WiFi Pulse V2</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer>
-  <script src="app-v2.js" defer></script>
+  <script src="app.js" defer></script>
   <script src="v2.js" defer></script>
 </body>
 </html>
