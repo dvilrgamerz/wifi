@@ -51,15 +51,23 @@
       <div class="panel-heading"><div><p class="kicker">SIGNAL SURVIVOR V2</p><h2>Endless gaming network test</h2></div><div class="server-chip"><span>Test length</span><b>Until you fall</b></div></div>
       <div class="survival-hud"><div class="hud-pill"><span>❤ HP</span><b id="gameHp">100/100</b></div><div class="hud-pill"><span>LEVEL</span><b id="gameLevel">1</b></div><div class="hud-pill"><span>KILLS</span><b id="gameKills">0</b></div><div class="hud-pill"><span>TIME</span><b id="gameTime">0:00</b></div></div>
       <div class="xp-track"><i id="xpFill"></i></div>
-      <div class="game-start-bar" id="gameStartBar">
-        <button class="primary-btn game-start-btn" id="forceStartGame" type="button">▶ START SIGNAL SURVIVOR</button>
-        <span>Starts a fresh run and clears any stuck overlay.</span>
+      <div class="game-control-bar" id="gameStartBar">
+        <div class="game-control-state">
+          <span class="game-state-dot" id="gameStateDot"></span>
+          <div><small>RUN STATUS</small><strong id="gameRunState">READY</strong></div>
+        </div>
+        <div class="game-control-actions">
+          <button class="primary-btn game-start-btn" id="forceStartGame" type="button">▶ START RUN</button>
+          <button class="game-control-btn" id="pauseGame" type="button" disabled>⏸ PAUSE</button>
+          <button class="game-control-btn danger" id="endGame" type="button" disabled>■ END RUN</button>
+        </div>
+        <div class="game-control-help"><span>WASD / Arrows</span><span>P = Pause</span><span>Esc = End</span></div>
       </div>
       <div class="game-layout">
         <div class="game-wrap survival-wrap">
           <canvas id="gameCanvas" width="960" height="540" aria-label="Signal Survivor endless survival game"></canvas>
           <div class="game-overlay" id="gameOverlay"><div class="game-logo">☄</div><h3>Signal Survivor V2</h3><p>Move in any direction. Your weapon fires automatically. Defeat swarms, collect XP, choose upgrades and survive bosses while the network test runs live.</p><button class="primary-btn" id="startGame">START ENDLESS RUN</button><small>WASD / arrow keys / drag on the arena / touch controls</small></div>
-          <div class="upgrade-overlay" id="upgradeOverlay" hidden><div class="upgrade-box"><p class="kicker">LEVEL UP</p><h3>Choose one upgrade</h3><div class="upgrade-choices" id="upgradeChoices"></div></div></div>
+          <div class="upgrade-overlay" id="upgradeOverlay" hidden><div class="upgrade-box"><p class="kicker">LEVEL UP</p><h3>Choose one upgrade</h3><div class="upgrade-choices" id="upgradeChoices"></div><small class="upgrade-hint">Choose a card or press 1, 2, or 3</small></div></div>
           <div class="touch-controls survival-controls" id="touchControls" hidden><button data-dir="up" aria-label="Move up">↑</button><button data-dir="left" aria-label="Move left">←</button><button data-dir="down" aria-label="Move down">↓</button><button data-dir="right" aria-label="Move right">→</button></div>
         </div>
         <aside class="live-card">
