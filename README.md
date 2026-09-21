@@ -71,10 +71,12 @@ Signal Survivor turns network diagnostics into an endless top-down survival game
 - Endless waves
 - Auto-firing weapons
 - XP gems and leveling
-- Upgrade choices
+- Upgrade choices with 1/2/3 keyboard shortcuts
 - Regular, elite and boss enemies
 - Increasing difficulty
-- Keyboard, pointer and mobile controls
+- Clear Start / Restart / Pause / Resume / End Run controls
+- WASD, arrow keys, pointer and larger mobile touch controls
+- Live READY / RUNNING / PAUSED / LEVEL UP / GAME OVER status
 
 **Live network measurements**
 - Ping
