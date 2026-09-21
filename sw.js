@@ -1,4 +1,4 @@
-const CACHE = 'wifi-pulse-v3.3';
+const CACHE = 'wifi-pulse-v3.4';
 const ASSETS = ['./', './index.html', './styles.css', './game.css', './insights.css', './app.js', './insights.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {

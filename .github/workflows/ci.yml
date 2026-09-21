@@ -37,6 +37,11 @@ jobs:
           grep -q 'id="forceStartGame"' index.html
           grep -q "forceStart?.addEventListener" app.js
           grep -q "ge.upgrade.style.display='none'" app.js
+          grep -q 'id="pauseGame"' index.html
+          grep -q 'id="endGame"' index.html
+          grep -q 'id="gameRunState"' index.html
+          grep -q 'function toggleGamePause' app.js
+          grep -q "chooseUpgrade(Number(e.key)-1)" app.js
 
   backend:
     runs-on: ubuntu-latest

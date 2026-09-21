@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.1
+
+### Signal Survivor polish
+- Added clear run-state indicators: READY, RUNNING, PAUSED, LEVEL UP, GAME OVER
+- Added Pause/Resume and End Run controls
+- Added keyboard shortcuts: P to pause, Esc to end, 1/2/3 to select upgrades
+- Improved mobile touch controls and control layout
+- Improved upgrade-card focus and accessibility
+- Hardened restart behavior so a fresh run clears stale upgrade UI
+
 ## 2.0.0
 
 WiFi Pulse V2 is the current major release.
