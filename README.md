@@ -12,6 +12,10 @@
   <img alt="Backend" src="https://img.shields.io/badge/backend-optional%20Python%20%2F%20Flask-green">
 </p>
 
+<p align="center">
+  <a href="https://wifi-pulse-v2.netlify.app"><strong>🌐 Live Demo — WiFi-Pulse-v2.netlify.app</strong></a>
+</p>
+
 ---
 
 ## 🚀 V2
