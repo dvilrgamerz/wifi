@@ -1,3 +1,8 @@
+<!-- DVILR PROJECT COVER v1 -->
+<p align="center"><img src="./assets/dvilr-project-banner.svg" width="100%" alt="WiFi Pulse V2: Test network stability, speed and gaming readiness." /></p>
+<p align="center"><a href="https://github.com/dvilrgamerz"><strong>Developer profile</strong></a> · <a href="https://github.com/dvilrgamerz/wifi"><strong>Source</strong></a> · <a href="https://wifi-pulse-v2.netlify.app"><strong>Live app ↗</strong></a></p>
+<!-- /DVILR PROJECT COVER -->
+
 # 📶 WiFi Pulse V2
 
 <p align="center">
