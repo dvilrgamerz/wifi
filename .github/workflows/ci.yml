@@ -20,6 +20,8 @@ jobs:
           node --check app.js
           node --check insights.js
           node --check sw.js
+      - name: Check service worker isolation
+        run: node --test tests/service-worker.test.cjs
       - name: Validate required app files
         run: |
           test -s index.html
