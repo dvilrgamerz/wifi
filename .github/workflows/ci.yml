@@ -20,14 +20,19 @@ jobs:
           node --check app.js
           node --check insights.js
           node --check sw.js
+          node --check monitor-metrics.js
+          node --check network-monitor.js
       - name: Check service worker isolation
-        run: node --test tests/service-worker.test.cjs
+        run: node --test tests/service-worker.test.cjs tests/network-monitor.test.cjs
       - name: Validate required app files
         run: |
           test -s index.html
           test -s styles.css
           test -s game.css
           test -s insights.css
+          test -s network-monitor.css
+          test -s monitor-probe.txt
+          grep -q 'id="monitorStart"' index.html
           test -s manifest.webmanifest
           test -s netlify.toml
           grep -q 'src="app.js"' index.html

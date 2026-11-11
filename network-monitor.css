@@ -1,0 +1,18 @@
+/* Dedicated, non-game HTTP connectivity monitor */
+.monitor-panel{margin-top:24px}
+.monitor-description{max-width:800px;color:#aabfd2;line-height:1.6}
+.monitor-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}
+.monitor-actions button{padding:11px 18px;border:1px solid #317d8d;border-radius:10px;background:#10374b;color:#e3faff;font-weight:700;cursor:pointer}
+.monitor-actions button:first-child{background:#43d0ba;color:#071923;border:0}
+.monitor-actions button:disabled{cursor:not-allowed;opacity:.45}
+.monitor-status{display:flex;align-items:center;gap:10px;color:#b7e6ee;font-size:14px;margin-bottom:15px}
+.monitor-status::before{content:'';width:9px;height:9px;border-radius:50%;background:#42d2b5}
+.monitor-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.monitor-metrics article{display:flex;flex-direction:column;gap:7px;padding:15px;border:1px solid #28506b;border-radius:12px;background:#0c2131}
+.monitor-metrics span,.monitor-caption{color:#91aabd;font-size:12px}
+.monitor-metrics strong{font-size:24px;color:#f2fbff}
+.monitor-chart-box{margin-top:16px;padding:13px;border:1px solid #28506b;border-radius:12px;background:#0b2030}
+.monitor-chart-box canvas{display:block;width:100%;height:160px}
+.monitor-chart-title{color:#9abbd2;font-size:12px;margin-bottom:8px}
+.monitor-caption{line-height:1.55;margin:12px 0 0}
+@media(max-width:700px){.monitor-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.monitor-metrics strong{font-size:20px}}
