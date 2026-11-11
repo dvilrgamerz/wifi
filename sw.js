@@ -1,9 +1,9 @@
 // WiFi Pulse caches only its own static shell, never speed-test responses.
-const CACHE = 'wifi-pulse-v3.5';
+const CACHE = 'wifi-pulse-v3.6';
 const PREFIX = 'wifi-pulse-';
 const ASSETS = [
   './', './index.html', './styles.css', './game.css', './insights.css',
-  './app.js', './insights.js', './manifest.webmanifest', './icon.svg'
+  './app.js', './insights.js', './monitor-metrics.js', './network-monitor.js', './network-monitor.css', './manifest.webmanifest', './icon.svg'
 ];
 const CORE_PATHS = new Set(ASSETS.map(asset => new URL(asset, self.location.href).pathname));
 

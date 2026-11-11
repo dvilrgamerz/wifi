@@ -305,3 +305,17 @@ MIT License — see [LICENSE](LICENSE).
   <strong>WiFi Pulse</strong><br>
   Speed. Stability. Survival. 📶☄️
 </p>
+
+## Connection monitor (new, no game required)
+
+The main page now includes a **Live HTTP connection stability** panel separate from the speed test and Signal Survivor. Select **Start monitoring** to measure this website's small `monitor-probe.txt` endpoint every five seconds.
+
+- Track median HTTP response time and median absolute change between adjacent successful readings.
+- Track successful and failed HTTP requests and view the latest 50 measurements in a graph.
+- Export the current tab's bounded (up to 120 samples) history as CSV.
+- Monitoring is opt-in, pauses while the tab is hidden or the browser reports offline, and stops when you leave the page.
+- No cookies, login, device scans or monitoring telemetry are sent to a separate analytics service.
+
+**Measurement limits:** browser HTTP timing is **not** Wi-Fi signal strength or ICMP ping; request failures are **not** measured network packet loss. The server/CDN, device load, network path and browser scheduling all affect these numbers. The monitor works on static Netlify hosting and on the optional Flask backend without privileged OS access.
+
+The tiny `monitor-probe.txt` endpoint intentionally bypasses service-worker caching. `node --test tests/network-monitor.test.cjs` runs metric and endpoint-isolation checks.

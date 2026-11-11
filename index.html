@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="game.css" />
   <link rel="stylesheet" href="insights.css" />
+  <link rel="stylesheet" href="network-monitor.css" />
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
@@ -45,6 +46,26 @@
         <article class="metric"><span>Upload</span><strong id="upValue">—</strong><small>Mbps</small></article>
       </div>
       <div class="progress-wrap" id="classicProgressWrap" hidden><div class="progress-top"><span id="progressText">Preparing…</span><span id="progressPercent">0%</span></div><div class="progress"><i id="progressBar"></i></div></div>
+    </section>
+
+    <section class="panel monitor-panel" id="monitorPanel" aria-labelledby="monitorHeading">
+      <div class="panel-heading"><div><p class="kicker">CONNECTION MONITOR</p><h2 id="monitorHeading">Live HTTP connection stability</h2></div><div class="server-chip"><span>Sample interval</span><b>5 seconds</b></div></div>
+      <p class="monitor-description">Monitor response time, request failures and variation to this website's server over time. Starts only when you press Start; stops when you press Stop or leave the page.</p>
+      <div class="monitor-actions">
+        <button id="monitorStart" type="button">Start monitoring</button>
+        <button id="monitorStop" type="button" disabled>Stop</button>
+        <button id="monitorExport" type="button" disabled>Export CSV</button>
+        <span class="monitor-caption">Elapsed: <b id="monitorElapsed">0s</b> · Samples: <b id="monitorSampleCount">0</b></span>
+      </div>
+      <p class="monitor-status" id="monitorStatus" role="status" aria-live="polite">Not started — no requests sent</p>
+      <div class="monitor-metrics">
+        <article><span>Median HTTP response</span><strong id="monitorLatency">—</strong></article>
+        <article><span>Median RTT variation</span><strong id="monitorVariation">—</strong></article>
+        <article><span>Successful requests</span><strong id="monitorSuccess">—</strong></article>
+        <article><span>Failed requests</span><strong id="monitorFailures">0</strong></article>
+      </div>
+      <div class="monitor-chart-box"><div class="monitor-chart-title">Recent HTTP response times · last 50 samples</div><canvas id="monitorChart" width="700" height="160" role="img" aria-label="Timeline of HTTP response time samples. Exact values can be exported as CSV."></canvas></div>
+      <p class="monitor-caption">Measures HTTP round-trip to the site host/CDN, not Wi-Fi radio signal, router health or ICMP packet loss. Request failures can also come from server/CDN problems. No LAN device scanning or continuous background probing.</p>
     </section>
 
     <section class="panel game-panel survival-panel" id="gamePanel" hidden>
@@ -97,5 +118,7 @@
   <footer><span>WiFi Pulse V2</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer>
   <script src="app.js" defer></script>
   <script src="insights.js" defer></script>
+  <script src="monitor-metrics.js" defer></script>
+  <script src="network-monitor.js" defer></script>
 </body>
 </html>

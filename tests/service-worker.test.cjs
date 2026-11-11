@@ -35,13 +35,14 @@ test('does not intercept speed tests, health, or cross-origin traffic', () => {
   assert.equal(fire('https://wifi.test/.netlify/functions/network').response,undefined);
   assert.equal(fire('https://speed.cloudflare.com/__down?bytes=400000').response,undefined);
   assert.equal(fire('https://wifi.test/unknown').response,undefined);
+  assert.equal(fire('https://wifi.test/monitor-probe.txt?probe=123').response,undefined);
 });
 test('keeps other applications caches when activating', async () => {
   const {listeners,deleted}=worker();
   const event={waitUntil(promise){this.wait=promise;}};
   listeners.activate(event);
   await event.wait;
-  assert.deepEqual(deleted,['wifi-pulse-v2','wifi-pulse-v3.4']);
+  assert.deepEqual(deleted,['wifi-pulse-v2','wifi-pulse-v3.4','wifi-pulse-v3.5']);
 });
 test('intercepts same-origin static assets only', async () => {
   const {fire}=worker();
