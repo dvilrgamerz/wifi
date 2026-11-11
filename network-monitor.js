@@ -85,8 +85,9 @@
     if (!running || token !== generation) return
     if (document.hidden) { render('Paused while tab is hidden'); return }
     if (!navigator.onLine) { render('Browser reports offline — waiting to resume'); return }
-    controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
+    const currentController = new AbortController()
+    controller = currentController
+    const timeout = setTimeout(() => currentController.abort(), TIMEOUT_MS)
     const started = performance.now()
     let sample
     try {
@@ -95,7 +96,7 @@
       url.searchParams.set('probe', Date.now().toString(36) + '-' + Math.random().toString(36).slice(2))
       const response = await fetch(url.href, {
         method: 'GET', credentials: 'omit', cache: 'no-store',
-        redirect: 'error', signal: controller.signal
+        redirect: 'error', signal: currentController.signal
       })
       if (!response.ok || (await response.text()).trim() !== 'WIFI_PULSE_MONITOR_OK') {
         throw new Error('Unexpected monitor response')
@@ -105,7 +106,7 @@
       sample = { at: Date.now(), ok: false, rttMs: null }
     } finally {
       clearTimeout(timeout)
-      controller = null
+      if (controller === currentController) controller = null
     }
     if (!running || token !== generation || document.hidden) return
     samples.push(sample)
@@ -152,6 +153,7 @@
   exportButton.addEventListener('click', downloadCsv)
   window.addEventListener('offline', () => {
     if (!running) return
+    generation += 1 // Discard any probe aborted by the connection transition.
     clearTimeout(timer)
     if (controller) controller.abort()
     statusText.textContent = 'Browser reports offline — waiting to resume'
@@ -165,6 +167,7 @@
     if (!running) return
     clearTimeout(timer)
     if (document.hidden) {
+      generation += 1 // Do not count aborted background requests as failures.
       if (controller) controller.abort()
       statusText.textContent = 'Paused while tab is hidden'
     } else if (navigator.onLine) probe(generation)
