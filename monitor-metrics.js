@@ -8,16 +8,17 @@
     return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
   }
   function summarize(samples) {
-    const records = Array.isArray(samples) ? samples.filter(s => s && typeof s.ok === 'boolean') : []
+    const all = Array.isArray(samples) ? samples.filter(Boolean) : []
+    const records = all.filter(s => typeof s.ok === 'boolean')
     const good = records.filter(s => s.ok && Number.isFinite(s.rttMs) && s.rttMs >= 0)
     const failures = records.length - good.length
     const latencies = good.map(s => s.rttMs), variations = []
-    for (let i = 1; i < records.length; i++) {
-      if (records[i - 1].ok && records[i].ok &&
-          Number.isFinite(records[i - 1].rttMs) && Number.isFinite(records[i].rttMs) &&
+    for (let i = 1; i < all.length; i++) {
+      if (all[i - 1].ok === true && all[i].ok === true &&
+          Number.isFinite(all[i - 1].rttMs) && Number.isFinite(all[i].rttMs) &&
           // Missing observations (tab sleeps, power management) are NOT continuous samples.
-          (!Number.isFinite(records[i].at) || !Number.isFinite(records[i - 1].at) || records[i].at - records[i - 1].at <= 15000)) {
-        variations.push(Math.abs(records[i].rttMs - records[i - 1].rttMs))
+          (!Number.isFinite(all[i].at) || !Number.isFinite(all[i - 1].at) || all[i].at - all[i - 1].at <= 15000)) {
+        variations.push(Math.abs(all[i].rttMs - all[i - 1].rttMs))
       }
     }
     const latency = median(latencies), jitter = median(variations)
