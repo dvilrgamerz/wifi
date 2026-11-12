@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.0.0 — WiFi Pulse Pro
+
+- Added connection-failure incident timeline with observed start and recovery boundaries.
+- Added one-click text ISP evidence report and raw CSV export from browser monitor.
+- Added uncertainty-aware, single-endpoint diagnostics instead of false ISP blame.
+- Added opt-in local desktop agent with gateway ICMP plus two public TCP targets.
+- Added local agent CSV/text evidence files, short-run CLI options, Windows launcher and route-override validation.
+- Detects monitoring gaps and avoids falsely treating browser pauses or computer sleep as observed uptime/downtime.
+- Simplified the monitor's interface and added an expandable clear guidance section and responsive event list.
+- Added regression tests and updated continuous integration.
+
+**Limitations:** No signed executable, no browser-based router diagnosis, no Wi-Fi strength measurement or traceroute, and no guaranteed full-background monitoring. Diagnosis is suggestive, not conclusive.
+
+---
+
+# Changelog
+
 ## 2.0.1
 
 ### Signal Survivor polish
