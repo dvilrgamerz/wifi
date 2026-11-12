@@ -55,12 +55,12 @@
   function render(note) {
     const stats = metrics.summarize(samples), events = metrics.interruptions(samples)
     const diagnosis = metrics.describeEvidence(stats, events)
-    el('monitorLatency').textContent = stats.latencyMs == null ? '—' : \`\${stats.latencyMs} ms\`
-    el('monitorVariation').textContent = stats.variationMs == null ? '—' : \`\${stats.variationMs} ms\`
-    el('monitorSuccess').textContent = stats.successPercent == null ? '—' : \`\${stats.successPercent}%\`
+    el('monitorLatency').textContent = stats.latencyMs == null ? '—' : `${stats.latencyMs} ms`
+    el('monitorVariation').textContent = stats.variationMs == null ? '—' : `${stats.variationMs} ms`
+    el('monitorSuccess').textContent = stats.successPercent == null ? '—' : `${stats.successPercent}%`
     el('monitorFailures').textContent = String(stats.failures)
     el('monitorSampleCount').textContent = String(stats.total)
-    el('monitorElapsed').textContent = started ? \`\${Math.floor(((ended || Date.now()) - started) / 1000)}s\` : '0s'
+    el('monitorElapsed').textContent = started ? `${Math.floor(((ended || Date.now()) - started) / 1000)}s` : '0s'
     el('monitorOutages').textContent = String(events.length)
     el('monitorFaultHeading').textContent = diagnosis.title
     el('monitorFaultDetails').textContent = diagnosis.detail
@@ -72,7 +72,7 @@
       const li = document.createElement('li')
       const heading = document.createElement('strong'); heading.textContent = event.ongoing ? 'Suspected interruption / not confirmed recovered' : 'Suspected interruption / recovered'
       const detail = document.createElement('span')
-      detail.textContent = \`First failure: \${time(event.firstFailureAt)} · \${event.failedRequests} failed checks · \${event.ongoing ? 'Last failure: ' + time(event.lastFailureAt) : 'Next successful check: ' + time(event.firstSuccessAfterAt)}\`
+      detail.textContent = `First failure: ${time(event.firstFailureAt)} · ${event.failedRequests} failed checks · ${event.ongoing ? 'Last failure: ' + time(event.lastFailureAt) : 'Next successful check: ' + time(event.firstSuccessAfterAt)}`
       li.append(heading, detail); list.appendChild(li)
     }
     el('monitorNoEvents').hidden = events.length > 0
@@ -92,7 +92,7 @@
     let sample
     try {
       const url = new URL(target)
-      url.searchParams.set('probe', \`\${Date.now()}-\${Math.random().toString(36).slice(2)}\`)
+      url.searchParams.set('probe', `${Date.now()}-${Math.random().toString(36).slice(2)}`)
       const response = await fetch(url.href, { cache: 'no-store', credentials: 'omit', redirect: 'error', signal: active.signal })
       if (!response.ok || (await response.text()).trim() !== 'WIFI_PULSE_MONITOR_OK') throw new Error('Unexpected website response')
       sample = { at: Date.now(), ok: true, rttMs: Math.round(performance.now() - t0), kind: 'http' }
@@ -148,8 +148,8 @@
     ]
     if (!events.length) lines.push('No multi-check interruption observed.')
     events.forEach((e, i) => lines.push(
-      \`\${i + 1}. First failed check: \${time(e.firstFailureAt)} | Last failed check: \${time(e.lastFailureAt)} | Failed checks: \${e.failedRequests}\`,
-      \`   Prior success: \${time(e.lastSuccessBeforeAt)} | Next success: \${time(e.firstSuccessAfterAt)} | \${e.ongoing ? 'Recovery not observed' : 'Recovery observed'}\`
+      `${i + 1}. First failed check: ${time(e.firstFailureAt)} | Last failed check: ${time(e.lastFailureAt)} | Failed checks: ${e.failedRequests}`,
+      `   Prior success: ${time(e.lastSuccessBeforeAt)} | Next success: ${time(e.firstSuccessAfterAt)} | ${e.ongoing ? 'Recovery not observed' : 'Recovery observed'}`
     ))
     lines.push('', 'INTERPRETATION & LIMITATIONS',
       '- Failure timestamps are check times, NOT the exact moment connectivity stopped.',
