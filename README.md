@@ -1,9 +1,97 @@
+# WiFi Pulse Pro
+
+**Know when your internet fails. Understand what the evidence can and cannot prove.**
+
+[Live browser monitor](https://wifi-pulse-v2.netlify.app/#monitorPanel) · [Desktop local diagnostics](#desktop-local-diagnostics) · [Source](https://github.com/dvilrgamerz/wifi) · [Tests](https://github.com/dvilrgamerz/wifi/actions)
+
+WiFi Pulse Pro combines an approachable opt-in browser monitor with a more informative local diagnostic tool. No account is needed. The existing speed test and Signal Survivor game remain available.
+
+## What works in Pro
+
+| Capability | Browser | Local agent |
+| --- | --- | --- |
+| Monitor over time | Yes, while page is visible | Yes, while the program runs |
+| Connection failure history | Same-site HTTP failures | Fixed external TCP target failures |
+| Latency / variation | HTTP response time | TCP connect time and adjacent variation |
+| Suspected interruptions | Two consecutive failed checks | Two consecutive two-target failures |
+| Timestamped history and recovery | Observed checks, not exact outage boundaries | Observed checks, not exact outage boundaries |
+| ISP-friendly report | One-click text and raw CSV | Local text and raw CSV |
+| Test gateway separately | No — browser sandbox | Yes, using ICMP if allowed |
+| PC vs Wi-Fi vs ISP | Insufficient evidence; explicitly uncertain | Tentative local/upstream clues, not proof |
+| Works after closing browser | No | Only while agent runs |
+| Account and telemetry | None | None |
+
+## Browser: 3 steps
+
+1. Open the [live WiFi Pulse Pro monitor](https://wifi-pulse-v2.netlify.app/#monitorPanel) in a visible browser tab.
+2. Press **Start monitoring**. A lightweight no-cache HTTP request tests this website about every 5 seconds.
+3. After a problem occurs, press **Download ISP report** and **Download raw CSV**. The timeline groups two or more sequential failed checks and marks any observed recovery.
+
+**Important:** Browser tabs are not background services; monitoring pauses when hidden, suspended, or closed. HTTP failures are not ICMP packet loss. The website or CDN can fail independently of your ISP. First failed checks are not exact physical outage start times. The exports state these limitations.
+
+## Desktop local diagnostics
+
+The optional agent runs on your own PC. It compares the local router gateway with two independent internet endpoints. It is a standard-library Python program, not a public API, browser extension, or LAN scanner.
+
+**Windows (simple):** Install Python 3.10+, open the desktop-agent folder, then double-click the start-windows.bat file. Keep its terminal open and press Ctrl+C to stop.
+
+**Windows, macOS or Linux (terminal):**
+
+    python desktop-agent/wifi_pulse_agent.py --interval 5 --output wifi-pulse-pro
+
+Try a short test:
+
+    python desktop-agent/wifi_pulse_agent.py --count 12 --interval 5
+
+If automatic gateway detection fails, use your router's real private IPv4 address:
+
+    python desktop-agent/wifi_pulse_agent.py --gateway 192.168.1.1
+
+The agent creates **wifi-pulse-pro.csv** (flushed after each check) and **wifi-pulse-pro.txt** when stopped normally. Select a different output prefix using --output. Files remain on your computer.
+
+### Reading the local diagnosis
+
+- **Gateway answers; both public endpoints fail:** Possible WAN/router-uplink or upstream interruption. Endpoint, VPN, firewall, and filtering failures remain plausible.
+- **Gateway and both public endpoints fail:** PC, Wi-Fi, router, and ISP causes cannot yet be separated.
+- **Internet works but gateway ICMP fails:** The router may block ping, even if it is healthy.
+- **One public endpoint works:** Possible route- or endpoint-specific issue; not proof of a full outage.
+- **Both public endpoints work:** Those two network paths answered at that moment. Other services can still fail.
+
+The tool sends ICMP to the detected IPv4 gateway and attempts TCP connections to 1.1.1.1:443 and 8.8.8.8:443. TCP connection time is not webpage load time or ICMP ping. The app does not currently measure true Wi-Fi radio signal strength, hop-by-hop traceroute, DNS resolution, or IPv6. These gaps matter when attributing blame.
+
+**Better evidence:** Compare Ethernet and Wi-Fi on the same PC and test a second device during the incident. Export exact observations and share the report without claiming the ISP is definitively at fault.
+
+### Privacy and security
+
+No login, ad trackers, cloud database, network scanning, admin privileges or data uploading by WiFi Pulse. Reports may include your local gateway address, so review them before sharing. Manual gateway input is validated as a private IPv4 address, and the ping command uses an argument array instead of a shell.
+
+## Development and quality checks
+
+    node --check monitor-metrics.js
+    node --check network-monitor.js
+    node --test tests/network-monitor.test.cjs tests/network-pro.test.cjs
+    python -m unittest discover -s desktop-agent -p "test_*.py"
+
+The original Flask API, PWA, speed tests and game tests remain in CI.
+
+## Competitor comparison and next milestones
+
+This is a real functionality upgrade, **not full parity** with established tools such as PingPlotter or Net Uptime Monitor. Those tools offer features this project still lacks: per-hop route visualizations, background tray services, configurable notifications, extensive historical graphs, and advanced packet-probe choices.
+
+**Priority roadmap (not implemented yet):** Windows portable executable and installer, tray monitoring and startup behavior, customizable endpoints/alerts, DNS and IPv6 tests, per-hop traceroute, searchable daily histories, printable charts, additional data retention controls and end-to-end tests on physical Windows machines.
+
+---
+
+## Legacy V2 features
+
+The original V2 documentation below describes the existing browser speed test, Signal Survivor game, optional Flask backend and PWA features. Those capabilities remain in WiFi Pulse Pro.
+
 <!-- DVILR PROJECT COVER v1 -->
 <p align="center"><img src="./assets/dvilr-project-banner.svg" width="100%" alt="WiFi Pulse V2: Test network stability, speed and gaming readiness." /></p>
 <p align="center"><a href="https://github.com/dvilrgamerz"><strong>Developer profile</strong></a> · <a href="https://github.com/dvilrgamerz/wifi"><strong>Source</strong></a> · <a href="https://wifi-pulse-v2.netlify.app"><strong>Live app ↗</strong></a></p>
 <!-- /DVILR PROJECT COVER -->
 
-# 📶 WiFi Pulse V2
+# 📶 WiFi Pulse V2 (legacy details)
 
 <p align="center">
   <strong>A modern browser internet diagnostics lab + an original game that tests your connection while you play.</strong>
@@ -11,7 +99,7 @@
 
 <p align="center">
   <a href="https://github.com/dvilrgamerz/wifi/actions"><img alt="CI" src="https://github.com/dvilrgamerz/wifi/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.0.0-7c3aed">
+  <img alt="Version" src="https://img.shields.io/badge/version-3.0.0-7c3aed">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
   <img alt="Frontend" src="https://img.shields.io/badge/frontend-HTML%20%2B%20CSS%20%2B%20JavaScript-orange">
   <img alt="Backend" src="https://img.shields.io/badge/backend-optional%20Python%20%2F%20Flask-green">
