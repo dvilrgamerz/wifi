@@ -37,3 +37,8 @@ test('ongoing interruption requires confirmed consecutive checks', () => {
 test('elapsed long sleep gap does not create misleading response variation', () => {
   assert.equal(summarize([ok(0, 20), ok(90000, 100)]).variationMs, null)
 })
+
+test('visible-tab pause breaks adjacent jitter calculation', () => {
+  const values = [ok(0, 20), { at: 5000, ok: null, kind: 'pause' }, ok(10000, 80)]
+  assert.equal(summarize(values).variationMs, null)
+})
