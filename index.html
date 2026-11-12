@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08111f" />
-  <meta name="description" content="WiFi Pulse V2 — real browser speed testing plus Signal Survivor, an endless game that measures network quality while you play." />
-  <title>WiFi Pulse V2 — Speed Test & Signal Survivor</title>
+  <meta name="description" content="WiFi Pulse Pro — monitor internet connection drops, latency and jitter, export ISP-ready evidence, and test download and upload speed." />
+  <title>WiFi Pulse Pro — Connection Drop Monitor & Speed Test</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -16,15 +16,15 @@
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="WiFi Pulse V2 home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>WiFi <b>Pulse V2</b></span></a>
+    <a class="brand" href="#" aria-label="WiFi Pulse Pro home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>WiFi <b>Pulse Pro</b></span></a>
     <div class="top-actions"><span class="online-pill" id="onlinePill"><i></i><span>Online</span></span><button class="icon-btn" id="historyBtn" aria-label="Open test history" title="History">↻</button></div>
   </header>
 
   <main class="shell">
     <section class="hero">
-      <p class="eyebrow">NETWORK PERFORMANCE LAB</p>
-      <h1>Test your internet.<br><span>Then survive the network.</span></h1>
-      <p class="hero-copy">Run a modern classic speed test or enter Signal Survivor while WiFi Pulse V2 measures latency, jitter, throughput, stability and gameplay smoothness.</p>
+      <p class="eyebrow">FREE NETWORK DIAGNOSTICS · PRIVATE BY DESIGN</p>
+      <h1>Find out when your<br><span>internet stops working.</span></h1>
+      <p class="hero-copy">Catch connection drops, measure response time and jitter, and save a clear report for your internet provider. Speed tests and Signal Survivor are still here.</p><p class="hero-shortcuts"><a href="#monitorPanel">Monitor connection</a><a href="#classicPanel">Run speed test</a><a href="#localDiagnostics">Diagnose router vs. upstream</a></p>
     </section>
 
     <section class="mode-grid" id="modeGrid" aria-label="Choose a test mode">
@@ -49,12 +49,12 @@
     </section>
 
     <section class="panel monitor-panel" id="monitorPanel" aria-labelledby="monitorHeading">
-      <div class="panel-heading"><div><p class="kicker">CONNECTION MONITOR</p><h2 id="monitorHeading">Live HTTP connection stability</h2></div><div class="server-chip"><span>Sample interval</span><b>5 seconds</b></div></div>
-      <p class="monitor-description">Monitor response time, request failures and variation to this website's server over time. Starts only when you press Start; stops when you press Stop or leave the page.</p>
+      <div class="panel-heading"><div><p class="kicker">LIVE CONNECTION MONITOR</p><h2 id="monitorHeading">Did your internet drop?</h2></div><div class="server-chip"><span>Sample interval</span><b>5 seconds</b></div></div>
+      <p class="monitor-description">One click starts checking this website every 5 seconds. See failed checks, suspected interruptions and when access returns. No sign-up or account needed.</p>
       <div class="monitor-actions">
         <button id="monitorStart" type="button">Start monitoring</button>
         <button id="monitorStop" type="button" disabled>Stop</button>
-        <button id="monitorExport" type="button" disabled>Export CSV</button>
+        <button id="monitorReport" type="button" disabled>Download ISP report</button><button id="monitorExport" type="button" disabled>Download raw CSV</button>
         <span class="monitor-caption">Elapsed: <b id="monitorElapsed">0s</b> · Samples: <b id="monitorSampleCount">0</b></span>
       </div>
       <p class="monitor-status" id="monitorStatus" role="status" aria-live="polite">Not started — no requests sent</p>
@@ -62,10 +62,10 @@
         <article><span>Median HTTP response</span><strong id="monitorLatency">—</strong></article>
         <article><span>Median RTT variation</span><strong id="monitorVariation">—</strong></article>
         <article><span>Successful requests</span><strong id="monitorSuccess">—</strong></article>
-        <article><span>Failed requests</span><strong id="monitorFailures">0</strong></article>
+        <article><span>Failed requests</span><strong id="monitorFailures">0</strong></article><article><span>Suspected interruptions</span><strong id="monitorOutages">0</strong></article>
       </div>
       <div class="monitor-chart-box"><div class="monitor-chart-title">Recent HTTP response times · last 50 samples</div><canvas id="monitorChart" width="700" height="160" role="img" aria-label="Timeline of HTTP response time samples. Exact values can be exported as CSV."></canvas></div>
-      <p class="monitor-caption">Measures HTTP round-trip to the site host/CDN, not Wi-Fi radio signal, router health or ICMP packet loss. Request failures can also come from server/CDN problems. No LAN device scanning or continuous background probing.</p>
+      <p class="monitor-caption"><strong>What this measures:</strong> HTTP requests to the site host/CDN. It does not measure ICMP packet loss, router health or actual Wi-Fi signal. The browser pauses when hidden or asleep; failure periods are approximations, not exact outage duration.</p><div class="monitor-findings"><div><p class="kicker">WHAT THE EVIDENCE SAYS</p><h3 id="monitorFaultHeading">Not enough evidence</h3><p id="monitorFaultDetails">Start monitoring to collect measurements.</p></div><span class="monitor-trust">Uncertainty-aware diagnosis</span></div><div class="monitor-incident-area"><div class="panel-heading"><div><p class="kicker">EVENT TIMELINE</p><h3>Possible interruptions</h3></div></div><p id="monitorNoEvents" class="monitor-caption">No suspected interruptions yet.</p><ol id="monitorEventList" class="monitor-events" aria-live="polite"></ol></div><div class="monitor-local" id="localDiagnostics"><div><p class="kicker">DEEPER DIAGNOSIS · OPTIONAL</p><h3>PC, Wi-Fi/router or your provider?</h3><p>A website alone cannot answer that. Run the local diagnostic agent on your computer to compare your router with two independent internet endpoints. The agent logs observations even without an open browser tab.</p></div><a href="https://github.com/dvilrgamerz/wifi#desktop-local-diagnostics" target="_blank" rel="noopener noreferrer">Set up local diagnostics</a></div>
     </section>
 
     <section class="panel game-panel survival-panel" id="gamePanel" hidden>
@@ -115,7 +115,7 @@
 
   <aside class="drawer" id="historyDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="kicker">LOCAL HISTORY</p><h2>Your tests</h2></div><button class="icon-btn" id="closeHistory" aria-label="Close history">×</button></div><div id="historyList" class="history-list"></div><button class="ghost-btn" id="clearHistory">Clear history</button></aside>
   <div class="scrim" id="scrim" hidden></div>
-  <footer><span>WiFi Pulse V2</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer>
+  <footer><span>WiFi Pulse Pro</span><span>Independent project — not affiliated with Ookla, Cloudflare, or Survivor.io.</span></footer>
   <script src="app.js" defer></script>
   <script src="insights.js" defer></script>
   <script src="monitor-metrics.js" defer></script>

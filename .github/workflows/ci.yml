@@ -22,8 +22,9 @@ jobs:
           node --check sw.js
           node --check monitor-metrics.js
           node --check network-monitor.js
+          node --check tests/network-pro.test.cjs
       - name: Check service worker isolation
-        run: node --test tests/service-worker.test.cjs tests/network-monitor.test.cjs
+        run: node --test tests/service-worker.test.cjs tests/network-monitor.test.cjs tests/network-pro.test.cjs
       - name: Validate required app files
         run: |
           test -s index.html
@@ -33,6 +34,8 @@ jobs:
           test -s network-monitor.css
           test -s monitor-probe.txt
           grep -q 'id="monitorStart"' index.html
+          grep -q 'id="monitorReport"' index.html
+          grep -q 'id="monitorEventList"' index.html
           test -s manifest.webmanifest
           test -s netlify.toml
           grep -q 'src="app.js"' index.html
@@ -62,7 +65,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/python/requirements.txt pytest
       - name: Compile backend
-        run: python -m py_compile backend/python/app.py
+        run: python -m py_compile backend/python/app.py desktop-agent/wifi_pulse_agent.py
       - name: Run regression tests
         working-directory: backend/python
         run: pytest -q
+      - name: Test local diagnostic agent
+        run: python -m unittest discover -s desktop-agent -p "test_*.py"

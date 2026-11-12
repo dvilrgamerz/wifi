@@ -1,5 +1,5 @@
 // WiFi Pulse caches only its own static shell, never speed-test responses.
-const CACHE = 'wifi-pulse-v3.6';
+const CACHE = 'wifi-pulse-v3.7';
 const PREFIX = 'wifi-pulse-';
 const ASSETS = [
   './', './index.html', './styles.css', './game.css', './insights.css',
