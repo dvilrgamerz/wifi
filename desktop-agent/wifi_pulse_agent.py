@@ -20,7 +20,7 @@ from pathlib import Path
 
 TARGETS = ("1.1.1.1", "8.8.8.8")
 FIELDS = ("timestamp_utc", "gateway_icmp_ms", "internet_a_tcp_ms",
-          "internet_b_tcp_ms", "assessment", "confidence")
+          "internet_b_tcp_ms", "assessment", "confidence", "observation_gap_before")
 
 
 def validate_gateway(value: str) -> str:
@@ -120,6 +120,12 @@ def probe_once(gateway: str | None) -> dict:
 def outage_events(records: list[dict]) -> list[dict]:
     events, streak = [], []
     for record in records:
+        if record.get("observation_gap_before"):
+            if len(streak) >= 2:
+                events.append({"start": streak[0]["timestamp_utc"],
+                               "last_failure": streak[-1]["timestamp_utc"],
+                               "restored": None, "checks": len(streak)})
+            streak = []
         down = record["internet_a_tcp_ms"] is None and record["internet_b_tcp_ms"] is None
         if down:
             streak.append(record)
@@ -139,8 +145,11 @@ def outage_events(records: list[dict]) -> list[dict]:
 def report(records: list[dict], gateway: str | None) -> str:
     events = outage_events(records)
     reachable = sum(r["internet_a_tcp_ms"] is not None or r["internet_b_tcp_ms"] is not None for r in records)
-    samples = [r["internet_a_tcp_ms"] for r in records if r["internet_a_tcp_ms"] is not None]
-    jitter = statistics.median(abs(a - b) for a, b in zip(samples, samples[1:])) if len(samples) > 1 else None
+    changes = [abs(a["internet_a_tcp_ms"] - b["internet_a_tcp_ms"])
+               for a, b in zip(records, records[1:])
+               if a["internet_a_tcp_ms"] is not None and b["internet_a_tcp_ms"] is not None
+               and not b.get("observation_gap_before")]
+    jitter = statistics.median(changes) if changes else None
     lines = ["WIFI PULSE PRO — LOCAL NETWORK EVIDENCE REPORT",
              "Generated UTC: " + datetime.now(timezone.utc).isoformat(timespec="seconds"),
              "Computer-side gateway: " + (gateway or "unavailable (not tested)"),
@@ -168,6 +177,7 @@ def report(records: list[dict], gateway: str | None) -> str:
               "- Gateway ICMP can be disabled by a healthy router.",
               "- These probes cannot reliably distinguish PC faults from Wi-Fi interference.",
               "- IPv4 testing only; VPN, firewall, DNS and upstream server behavior can affect results.",
+              "- Gaps from sleep/pauses are not counted as successful or failed checks.",
               "- Test with Ethernet vs Wi-Fi and repeat before attributing fault.",
               "- Probe records are saved on this computer. Share only what you choose.", ""]
     return "\n".join(lines)
@@ -189,6 +199,7 @@ def run() -> None:
     prefix = Path(args.output)
     prefix.parent.mkdir(parents=True, exist_ok=True)
     records = []
+    last_wall = None
     print("WiFi Pulse Pro local diagnostic logger. Ctrl+C to stop.")
     print("Router gateway:", gateway or "unavailable (use --gateway if desired)")
     with (prefix.with_suffix(".csv")).open("w", newline="", encoding="utf-8") as file:
@@ -197,7 +208,11 @@ def run() -> None:
         try:
             while args.count == 0 or len(records) < args.count:
                 started = time.monotonic()
+                wall = time.time()
+                gap = last_wall is not None and wall - last_wall > args.interval * 2 + 5
+                last_wall = wall
                 result = probe_once(gateway)
+                result["observation_gap_before"] = gap
                 records.append(result); writer.writerow(result); file.flush()
                 print(result["timestamp_utc"], result["assessment"])
                 remaining = args.interval - (time.monotonic() - started)
