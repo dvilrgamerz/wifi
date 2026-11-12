@@ -16,3 +16,29 @@
 .monitor-chart-title{color:#9abbd2;font-size:12px;margin-bottom:8px}
 .monitor-caption{line-height:1.55;margin:12px 0 0}
 @media(max-width:950px){.monitor-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.monitor-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.monitor-metrics strong{font-size:20px}.monitor-actions button{flex:1;min-width:135px}.monitor-findings,.monitor-local{flex-direction:column;align-items:stretch}}
+
+/* WiFi Pulse Pro: progressive disclosure, not a busy dashboard. */
+.monitor-panel{scroll-margin-top:25px;position:relative;overflow:hidden}
+.monitor-panel::after{content:'';position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#43d0ba,#6e88ff,transparent)}
+.monitor-panel .panel-heading h2{letter-spacing:-.02em}
+.monitor-actions button{transition:transform .15s,background .15s}
+.monitor-actions button:not(:disabled):hover{transform:translateY(-2px);background:#1b5365}
+.monitor-actions button:first-child:not(:disabled):hover{background:#68efdb}
+.monitor-findings,.monitor-local{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:20px;margin-top:18px;border:1px solid #2c5668;border-radius:16px;background:linear-gradient(140deg,#12354a,#101f32)}
+.monitor-findings h3,.monitor-local h3,.monitor-incident-area h3{color:#f4ffff;margin:5px 0 8px;font-size:20px}
+.monitor-findings p:not(.kicker),.monitor-local p:not(.kicker){max-width:720px;color:#b5cbdc;line-height:1.55;margin:0}
+.monitor-trust{white-space:nowrap;font-size:12px;color:#8cebd9;background:#174637;border:1px solid #2c7968;padding:9px 12px;border-radius:999px}
+.monitor-incident-area{padding:18px;margin-top:16px;border:1px solid #29475c;border-radius:16px;background:#0a1c2b}
+.monitor-incident-area .panel-heading{margin-bottom:8px}
+.monitor-events{list-style:decimal;padding-left:22px;margin:12px 0 0}
+.monitor-events li{padding:12px 8px;border-bottom:1px solid #2e4960;line-height:1.5}
+.monitor-events strong{display:block;color:#ffd4c7;margin-bottom:3px}
+.monitor-events span{font-size:13px;color:#a8c8db}
+.monitor-local{border-color:#334478}
+.monitor-local a{display:inline-block;flex-shrink:0;border-radius:10px;background:#d5f6fb;color:#071c2b;text-decoration:none;font-weight:700;padding:13px 17px}
+.monitor-local a:hover{background:#fff}
+.hero-shortcuts{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 8px}
+.hero-shortcuts a{display:inline-block;text-decoration:none;border-radius:999px;padding:11px 16px;background:#153446;border:1px solid #335d75;color:#d8faff;font-size:14px;font-weight:700}
+.hero-shortcuts a:first-child{background:#43d0ba;border-color:#43d0ba;color:#081824}
+.hero-shortcuts a:hover{filter:brightness(1.14)}
+@media(max-width:700px){.monitor-trust{white-space:normal}.monitor-local a{text-align:center}.hero-shortcuts a{font-size:13px;padding:10px 12px}}
