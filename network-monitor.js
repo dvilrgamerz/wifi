@@ -1,177 +1,174 @@
-// Opt-in browser HTTP monitor. No port scans, LAN discovery, background telemetry or ICMP claims.
+// Opt-in browser HTTP monitoring. Diagnoses only reachability of this website, not LAN or ISP cause.
 (function () {
   'use strict'
-  const metric = window.WiFiMonitorMetrics
-  const byId = id => document.getElementById(id)
-  const startButton = byId('monitorStart')
-  if (!metric || !startButton) return
-  const stopButton = byId('monitorStop')
-  const exportButton = byId('monitorExport')
-  const statusText = byId('monitorStatus')
-  const elapsedText = byId('monitorElapsed')
-  const latencyText = byId('monitorLatency')
-  const variationText = byId('monitorVariation')
-  const successText = byId('monitorSuccess')
-  const failuresText = byId('monitorFailures')
-  const sampleCount = byId('monitorSampleCount')
-  const chart = byId('monitorChart')
-  const ctx = chart.getContext('2d')
-  const TARGET = new URL('./monitor-probe.txt', document.baseURI)
-  const INTERVAL_MS = 5000
-  const TIMEOUT_MS = 3500
-  const MAX_SAMPLES = 120
-  let running = false
-  let generation = 0
-  let startedAt = 0
-  let timer = null
-  let controller = null
-  let samples = []
-
-  function schedule(token) {
-    if (running && generation === token) timer = setTimeout(() => probe(token), INTERVAL_MS)
+  const metrics = window.WiFiMonitorMetrics
+  const el = id => document.getElementById(id)
+  const startBtn = el('monitorStart')
+  if (!metrics || !startBtn) return
+  const stopBtn = el('monitorStop'), csvBtn = el('monitorExport'), reportBtn = el('monitorReport')
+  const chart = el('monitorChart'), ctx = chart.getContext('2d')
+  const target = new URL('./monitor-probe.txt', document.baseURI)
+  const INTERVAL = 5000, TIMEOUT = 3500, LIMIT = 2160
+  let running = false, generation = 0, timer = null, controller = null, started = 0, ended = null, samples = []
+  const time = ms => ms == null ? 'Not observed' : new Date(ms).toLocaleString()
+  const label = n => n == null ? '—' : String(n)
+  const download = (filename, mime, body) => {
+    const url = URL.createObjectURL(new Blob([body], { type: mime }))
+    const a = document.createElement('a')
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 3000)
   }
-  function printNumber(value, suffix) {
-    return value === null ? '—' : String(value) + suffix
+  function schedule(token) {
+    if (running && generation === token) timer = setTimeout(() => probe(token), INTERVAL)
+  }
+  function append(sample) {
+    samples.push(sample)
+    if (samples.length > LIMIT) samples.shift()
   }
   function draw() {
     if (!ctx) return
-    const width = chart.width, height = chart.height
-    ctx.clearRect(0, 0, width, height)
-    ctx.strokeStyle = '#29465d'
-    ctx.lineWidth = 1
+    const w = chart.width, h = chart.height
+    ctx.clearRect(0, 0, w, h)
+    ctx.strokeStyle = '#31516a'; ctx.lineWidth = 1
     for (let i = 1; i <= 3; i++) {
-      ctx.beginPath(); ctx.moveTo(0, i * height / 4)
-      ctx.lineTo(width, i * height / 4); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(0, h * i / 4); ctx.lineTo(w, h * i / 4); ctx.stroke()
     }
-    const list = samples.slice(-50)
-    const successful = list.filter(x => x.ok && Number.isFinite(x.rttMs))
-    if (list.length < 2 || !successful.length) return
-    const max = Math.max(100, ...successful.map(x => x.rttMs)) * 1.15
-    ctx.strokeStyle = '#5edcc9'
-    ctx.lineWidth = 2.5
-    let connected = false
-    for (let i = 0; i < list.length; i++) {
-      const sample = list[i]
-      if (!sample.ok || !Number.isFinite(sample.rttMs)) {
-        connected = false
-        continue
+    const list = samples.slice(-75)
+    if (!list.length) return
+    const maximum = Math.max(100, ...list.filter(s => s.ok && Number.isFinite(s.rttMs)).map(s => s.rttMs)) * 1.1
+    let previous = null
+    list.forEach((s, i) => {
+      const x = 7 + i * (w - 14) / Math.max(1, list.length - 1)
+      if (s.ok === false) {
+        ctx.fillStyle = '#ff8b79'; ctx.fillRect(x - 2, h - 12, 4, 7); previous = null; return
       }
-      const x = (i / Math.max(1, list.length - 1)) * (width - 12) + 6
-      const y = height - 8 - (sample.rttMs / max) * (height - 16)
-      if (!connected) { ctx.beginPath(); ctx.moveTo(x, y) }
-      else ctx.lineTo(x, y)
-      // Isolated samples get a visible point too.
-      ctx.stroke()
-      ctx.fillStyle = '#5edcc9'
-      ctx.fillRect(x - 2, y - 2, 4, 4)
-      connected = true
-    }
+      if (s.ok !== true || !Number.isFinite(s.rttMs)) { previous = null; return }
+      const y = Math.max(7, h - 15 - s.rttMs / maximum * (h - 27))
+      if (previous) {
+        ctx.beginPath(); ctx.moveTo(previous.x, previous.y); ctx.lineTo(x, y)
+        ctx.strokeStyle = '#5edcc9'; ctx.lineWidth = 2; ctx.stroke()
+      }
+      ctx.fillStyle = '#5edcc9'; ctx.fillRect(x - 2, y - 2, 4, 4)
+      previous = { x, y }
+    })
   }
   function render(note) {
-    const stats = metric.summarize(samples)
-    latencyText.textContent = printNumber(stats.latencyMs, ' ms')
-    variationText.textContent = printNumber(stats.variationMs, ' ms')
-    successText.textContent = printNumber(stats.successPercent, '%')
-    failuresText.textContent = String(stats.failures)
-    sampleCount.textContent = String(stats.total)
-    elapsedText.textContent = startedAt ? Math.floor((Date.now() - startedAt) / 1000) + 's' : '0s'
-    statusText.textContent = note || (running ? stats.health : 'Stopped — start to measure')
-    startButton.disabled = running
-    stopButton.disabled = !running
-    exportButton.disabled = !samples.length
+    const stats = metrics.summarize(samples), events = metrics.interruptions(samples)
+    const diagnosis = metrics.describeEvidence(stats, events)
+    el('monitorLatency').textContent = stats.latencyMs == null ? '—' : \`\${stats.latencyMs} ms\`
+    el('monitorVariation').textContent = stats.variationMs == null ? '—' : \`\${stats.variationMs} ms\`
+    el('monitorSuccess').textContent = stats.successPercent == null ? '—' : \`\${stats.successPercent}%\`
+    el('monitorFailures').textContent = String(stats.failures)
+    el('monitorSampleCount').textContent = String(stats.total)
+    el('monitorElapsed').textContent = started ? \`\${Math.floor(((ended || Date.now()) - started) / 1000)}s\` : '0s'
+    el('monitorOutages').textContent = String(events.length)
+    el('monitorFaultHeading').textContent = diagnosis.title
+    el('monitorFaultDetails').textContent = diagnosis.detail
+    el('monitorStatus').textContent = note || (running ? stats.health : 'Stopped — export your evidence')
+    startBtn.disabled = running; stopBtn.disabled = !running
+    csvBtn.disabled = !stats.total; reportBtn.disabled = !stats.total
+    const list = el('monitorEventList'); list.replaceChildren()
+    for (const event of events.slice(-6).reverse()) {
+      const li = document.createElement('li')
+      const heading = document.createElement('strong'); heading.textContent = event.ongoing ? 'Suspected interruption / not confirmed recovered' : 'Suspected interruption / recovered'
+      const detail = document.createElement('span')
+      detail.textContent = \`First failure: \${time(event.firstFailureAt)} · \${event.failedRequests} failed checks · \${event.ongoing ? 'Last failure: ' + time(event.lastFailureAt) : 'Next successful check: ' + time(event.firstSuccessAfterAt)}\`
+      li.append(heading, detail); list.appendChild(li)
+    }
+    el('monitorNoEvents').hidden = events.length > 0
     draw()
   }
   async function probe(token) {
     if (!running || token !== generation) return
-    if (document.hidden) { render('Paused while tab is hidden'); return }
-    if (!navigator.onLine) { render('Browser reports offline — waiting to resume'); return }
-    const currentController = new AbortController()
-    controller = currentController
-    const timeout = setTimeout(() => currentController.abort(), TIMEOUT_MS)
-    const started = performance.now()
+    if (document.hidden) { render('Paused while this tab is hidden'); return }
+    if (!navigator.onLine) {
+      append({ at: Date.now(), ok: false, rttMs: null, kind: 'browser-offline' })
+      render('Your browser reports offline; cause not verified')
+      schedule(token); return
+    }
+    const active = new AbortController(); controller = active
+    const timeout = setTimeout(() => active.abort(), TIMEOUT)
+    const t0 = performance.now()
     let sample
     try {
-      // A unique query string avoids normal browser caches and service-worker shell caching.
-      const url = new URL(TARGET)
-      url.searchParams.set('probe', Date.now().toString(36) + '-' + Math.random().toString(36).slice(2))
-      const response = await fetch(url.href, {
-        method: 'GET', credentials: 'omit', cache: 'no-store',
-        redirect: 'error', signal: currentController.signal
-      })
-      if (!response.ok || (await response.text()).trim() !== 'WIFI_PULSE_MONITOR_OK') {
-        throw new Error('Unexpected monitor response')
-      }
-      sample = { at: Date.now(), ok: true, rttMs: Math.round(performance.now() - started) }
+      const url = new URL(target)
+      url.searchParams.set('probe', \`\${Date.now()}-\${Math.random().toString(36).slice(2)}\`)
+      const response = await fetch(url.href, { cache: 'no-store', credentials: 'omit', redirect: 'error', signal: active.signal })
+      if (!response.ok || (await response.text()).trim() !== 'WIFI_PULSE_MONITOR_OK') throw new Error('Unexpected website response')
+      sample = { at: Date.now(), ok: true, rttMs: Math.round(performance.now() - t0), kind: 'http' }
     } catch {
-      sample = { at: Date.now(), ok: false, rttMs: null }
+      sample = { at: Date.now(), ok: false, rttMs: null, kind: 'http' }
     } finally {
       clearTimeout(timeout)
-      if (controller === currentController) controller = null
+      if (controller === active) controller = null
     }
     if (!running || token !== generation || document.hidden) return
-    samples.push(sample)
-    if (samples.length > MAX_SAMPLES) samples.shift()
-    render()
-    schedule(token)
+    append(sample); render(); schedule(token)
+  }
+  function changeState() {
+    if (!running) return
+    clearTimeout(timer); generation++
+    if (controller) controller.abort()
+    append({ at: Date.now(), ok: null, rttMs: null, kind: 'pause' })
+    if (document.hidden) render('Paused while tab is hidden; no outage assumed')
+    else probe(generation)
   }
   function start() {
     if (running) return
-    generation += 1
-    running = true
-    startedAt = Date.now()
-    samples = []
-    render('Measuring same-origin HTTP response times…')
-    probe(generation)
+    running = true; generation++; started = Date.now(); ended = null; samples = []
+    render('Starting website connectivity checks…'); probe(generation)
   }
   function stop() {
-    running = false
-    generation += 1
-    clearTimeout(timer)
-    if (controller) controller.abort()
-    render('Stopped — samples kept only in this tab')
-  }
-  function downloadCsv() {
-    if (!samples.length) return
-    const lines = ['timestamp_utc,http_response_ms,request_success']
-    for (const item of samples) {
-      lines.push([new Date(item.at).toISOString(),
-        item.ok ? String(item.rttMs) : '',
-        item.ok ? 'true' : 'false'].join(','))
-    }
-    const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const anchor = document.createElement('a')
-    anchor.href = url
-    anchor.download = 'wifi-pulse-http-monitor-' + new Date().toISOString().slice(0, 10) + '.csv'
-    document.body.appendChild(anchor)
-    anchor.click()
-    anchor.remove()
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
-  }
-  startButton.addEventListener('click', start)
-  stopButton.addEventListener('click', stop)
-  exportButton.addEventListener('click', downloadCsv)
-  window.addEventListener('offline', () => {
     if (!running) return
-    generation += 1 // Discard any probe aborted by the connection transition.
-    clearTimeout(timer)
+    running = false; generation++; ended = Date.now(); clearTimeout(timer)
     if (controller) controller.abort()
-    statusText.textContent = 'Browser reports offline — waiting to resume'
-  })
-  window.addEventListener('online', () => {
-    if (!running || document.hidden) return
-    clearTimeout(timer)
-    probe(generation)
-  })
-  document.addEventListener('visibilitychange', () => {
-    if (!running) return
-    clearTimeout(timer)
-    if (document.hidden) {
-      generation += 1 // Do not count aborted background requests as failures.
-      if (controller) controller.abort()
-      statusText.textContent = 'Paused while tab is hidden'
-    } else if (navigator.onLine) probe(generation)
-  })
+    render('Stopped — results available for export')
+  }
+  function exportCsv() {
+    const lines = ['timestamp_utc,kind,http_response_ms,request_success']
+    for (const s of samples) lines.push([new Date(s.at).toISOString(), s.kind,
+      s.ok ? s.rttMs : '', s.ok == null ? '' : s.ok].join(','))
+    download('wifi-pulse-pro-samples.csv', 'text/csv;charset=utf-8', lines.join('\n') + '\n')
+  }
+  function exportReport() {
+    const stats = metrics.summarize(samples), events = metrics.interruptions(samples)
+    const diagnosis = metrics.describeEvidence(stats, events)
+    const lines = [
+      'WIFI PULSE PRO — CONNECTION EVIDENCE REPORT',
+      'Created: ' + new Date().toISOString(),
+      'Monitoring period: ' + time(started) + ' to ' + time(ended || Date.now()),
+      'Measurement: opt-in HTTP GET to ' + target.origin + target.pathname,
+      'Approximate interval: 5 seconds while tab is visible',
+      'Completed checks: ' + stats.total, 'Successful requests: ' + stats.successes,
+      'Failed requests: ' + stats.failures, 'Success rate: ' + label(stats.successPercent) + '%',
+      'Median HTTP response time: ' + label(stats.latencyMs) + ' ms',
+      'Median adjacent response-time variation: ' + label(stats.variationMs) + ' ms',
+      'Suspected multi-check interruptions: ' + events.length, '',
+      'EVIDENCE SUMMARY', diagnosis.title, diagnosis.detail, '', 'INTERRUPTION LOG'
+    ]
+    if (!events.length) lines.push('No multi-check interruption observed.')
+    events.forEach((e, i) => lines.push(
+      \`\${i + 1}. First failed check: \${time(e.firstFailureAt)} | Last failed check: \${time(e.lastFailureAt)} | Failed checks: \${e.failedRequests}\`,
+      \`   Prior success: \${time(e.lastSuccessBeforeAt)} | Next success: \${time(e.firstSuccessAfterAt)} | \${e.ongoing ? 'Recovery not observed' : 'Recovery observed'}\`
+    ))
+    lines.push('', 'INTERPRETATION & LIMITATIONS',
+      '- Failure timestamps are check times, NOT the exact moment connectivity stopped.',
+      '- The start of interruption is bounded by prior success and first failed check when available.',
+      '- A failed HTTP request is not ICMP packet loss or direct evidence of ISP fault.',
+      '- Website/CDN, browser, VPN, device, Wi-Fi, router and upstream networks are all possible causes.',
+      '- Hidden tabs, sleeping devices and browser throttling are not continuously monitored.',
+      '- For local-vs-upstream evidence, run the optional local diagnostic agent and compare Ethernet with Wi-Fi.',
+      '- Report is produced locally; no telemetry is uploaded by WiFi Pulse.',
+      '', 'Supporting sample-level evidence: export CSV separately.')
+    download('wifi-pulse-pro-isp-report.txt', 'text/plain;charset=utf-8', lines.join('\n') + '\n')
+  }
+  startBtn.addEventListener('click', start)
+  stopBtn.addEventListener('click', stop)
+  csvBtn.addEventListener('click', exportCsv)
+  reportBtn.addEventListener('click', exportReport)
+  document.addEventListener('visibilitychange', changeState)
+  window.addEventListener('offline', changeState)
+  window.addEventListener('online', changeState)
   window.addEventListener('pagehide', stop)
   render('Not started — no requests sent')
 })()
