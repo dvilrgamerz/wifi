@@ -1,7 +1,7 @@
 {
-  "name": "WiFi Pulse V2 — Speed Test & Signal Survivor",
-  "short_name": "WiFi Pulse V2",
-  "description": "WiFi Pulse V2 browser internet diagnostics plus Signal Survivor, a live gaming network stress test.",
+  "name": "WiFi Pulse Pro — Connection Monitor & Speed Test",
+  "short_name": "WiFi Pulse Pro",
+  "description": "Track connection drops, latency, jitter and export ISP evidence reports.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
